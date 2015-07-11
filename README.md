@@ -44,70 +44,102 @@ These are all already installed, but here are the original links.
   * [R]()
 
 # Circular represnetation of your calls
-Many tools are available to do this the most common know is circos. But circos is a really not user friendly. In this tutoriel we will use the circularize packe from the cran R project. This package is dedicated to generate circular plot and had the advantage to provide pre-build function for genomics data.
+Many tools are available to do this the most common know is circos. But circos is a really not user friendly. In this tutoriel we show you an easy alternative to build circular representation of genomic data.
 
-code:
+First we nee to go in the folder to do the analysis
+
+``` {.bash}
+cd /home/training/ebicancerworkshop201507/visualization/
+```
+
+Let see what is in this folder
+
+``` {.bash}
+tree
+```
+
+ data/
+  -- breakdancer.somatic.tsv
+  -- mutec.somatic.vcf
+  -- scones.somatic.30k.tsv
+ src
+  -- commands.sh
+
+Take a look of the data files.
+
+These are data of the same paired sample that we worked on during the SNV pratical. But this time the data are not limitated to a short piece of the chromosome 9.
+
+
+``` {.bash}
+less data/breakdancer.somatic.tsv
+less data/mutec.somatic.vcf
+less data/scones.somatic.30k.tsv
+```
+
+
+**What can you see fron this data ?**
+[solution](solution/_data1.md)
+
+**Why don't we use the vcf format for all type of call?**
+[solution](solution/_data2.md)
+
+**Did you notice something different from the SNV pratical ?**
+[solution](solution/_data3.md)
+
+
+The analysis will be done using the R program
+
+``` {.bash}
+R
+```
+
+We will use the circularize package from the cran R project. This package is dedicated to generate circular plot and had the advantage to provide pre-build function for genomics data
+
 ``` {.bash}
 library(circlize)
+```
 
-args=commandArgs(TRUE)
-##args1 - CNV bedfile col4 = -1 (del) or 1 (dup)
-##args2 - SV file formated as SV pipeline : 
-##Method  Sample_BN       chr1    pos1    pos2    chr2    size    SV_Format       ReadSup_N/T     Onco_State      DGV_hit Gene_cover      Gene_disrupt    Gene_UTR        Repeat_Masker_hit
-##args3 - reference (either hg18 ; hg19 ; mm9 ; mm10 ; rn4 ; rn5) 
-##args4 - output pdf
+We need to set-up the generic graphical parameters 
 
-print(args)
 
-##open output
-pdf(file=args[4], height=8, width=8, compress=TRUE)
-
-##initiualize plot
+``` {.bash}
+## initiualize plot
 par(mar = c(1, 1, 1, 1))
 circos.par("start.degree" = 90)
 circos.par("track.height" = 0.05)
 circos.par("canvas.xlim" = c(-1.3, 1.3), "canvas.ylim" = c(-1.3, 1.3))
+```
 
+WHy ci
 ## draw reference ideograms
-circos.initializeWithIdeogram(species = args[3])
+circos.initializeWithIdeogram(species = "hg19")
 
-##draw 2 tracks for cnvs
-cnv=read.table(args[1])
-voidDF=data.frame("chrY",0,0,1)
-dup=cnv[cnv[,4]==1,]
-cexBase=1
-if (dim(dup)[1] == 0 ) {
-               dup=voidDF
-               cexBase=0.001
-        }
+## draw 1 track for somatic mutations
+snv_tmp=read.table("data/mutec.somatic.vcf",comment.char="#")
+snv=cbind(snv_tmp[,1:2],snv_tmp[,2]+1)
+circos.genomicTrackPlotRegion(snv,stack=TRUE, panel.fun = function(region, value, ...) {
+	circos.genomicPoints(region, value, cex = 0.05, pch = 9,col='orange' , ...)
+})
+
+## draw 2 tracks for cnvs
+cnv=read.table("data/scones.somatic.30k.tsv",header=T)
+dup=cnv[cnv[,5]>2,]
+del=cnv[cnv[,5]<2,]
 circos.genomicTrackPlotRegion(dup, stack = TRUE,panel.fun = function(region, value, ...) {
-        circos.genomicRect(region, value, col = "red",bg.border = NA, cex=cexBase , ...)
+        circos.genomicRect(region, value, col = "red",bg.border = NA, cex=1 , ...)
 })
-del=cnv[cnv[,4]==-1,]
-cexBase=1
-if (dim(del)[1] == 0 ) {
-               del=voidDF
-               cexBase=0.001
-        }
 circos.genomicTrackPlotRegion(del, stack = TRUE,panel.fun = function(region, value, ...) {
-        circos.genomicRect(region, value, col = "blue",bg.border = NA, cex=cexBase , ...)
+        circos.genomicRect(region, value, col = "blue",bg.border = NA, cex=1 , ...)
 })
 
-## draw 4 tracks + links for SV
-sv=read.table(args[2])
-typeE=c("DEL","INS","INV","DUP")
-colE=c("blue","black","green","red")
-#voidDF=data.frame("chrY",0,0,1)
-#circos.par("track.height" = 0.05)
-for (i in 1:4) { 
+## draw 3 tracks + links for SVs
+sv=read.table("data/breakdancer.somatic.tsv",header=T)
+typeE=c("DEL","INS","INV")
+colE=c("blue","black","green")
+for (i in 1:3) { 
         bed_list=sv[sv[,8]==typeE[i],c(3,4,5,7)]
-        cexBase=1
-        if (dim(bed_list)[1] == 0 ) {
-               bed_list=voidDF
-               cexBase=0.001
-        }
         circos.genomicTrackPlotRegion(bed_list,stack=TRUE, panel.fun = function(region, value, ...) {
-                circos.genomicPoints(region, value, cex = cexBase, pch = 16, col = colE[i], ...)
+                circos.genomicPoints(region, value, cex = 0.5, pch = 16, col = colE[i], ...)
         })
 }
 
@@ -121,10 +153,14 @@ if (dim(bed1)[1] > 0 & dim(bed2)[1] > 0) {
         }
 }
 
-legend(0.7,1.4,legend=c("CNV-DUPLICATION","CNV-DELETION","SV-DELETION","SV-INSERTION","SV-INVERSION","SV-DUPLICATION"),col=c("red","blue","blue","black","green","red"),pch=c(15,15,16,16,16,16,16),cex=0.75,title="Tracks:",bty='n')
-legend(0.619,1.015,legend="SV-TRANSLOCATION",col="black",lty=1,cex=0.75,lwd=1.2,bty='n')
+title("Somatic calls (SNV - SV - CNV) of sample LR376")
+legend(0.7,1.4,legend=c("SNV", "CNV-DUPLICATION","CNV-DELETION","SV-DELETION","SV-INSERTION","SV-INVERSION"),col=c("orange","red","blue","blue","black","green","red"),pch=c(16,15,15,16,16,16,16,16),cex=0.75,title="Tracks:",bty='n')
+legend(0.6,0.95,legend="SV-TRANSLOCATION",col="black",lty=1,cex=0.75,lwd=1.2,bty='n')
 
 ##close file
+## open output
+pdf(file="somatic_circular_plot.pdf", height=8, width=8, compress=TRUE)
+
 dev.off()
 ```
 

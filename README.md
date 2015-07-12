@@ -37,7 +37,7 @@ These are all already installed, but here are the original links.
   * [SnpEff](http://snpeff.sourceforge.net/)
   * [R]()
 
-# Circular represnetation of your calls
+# Circular representation of your calls
 Many tools are available to do this the most common know is circos. But circos is a really not user friendly. In this tutoriel we show you an easy alternative to build circular representation of genomic data.
 
 First we nee to go in the folder to do the analysis
@@ -98,7 +98,6 @@ We need to set-up the generic graphical parameters
 
 
 ```{.bash}
-## initiualize plot
 par(mar = c(1, 1, 1, 1))
 circos.par("start.degree" = 90)
 circos.par("track.height" = 0.05)
@@ -227,17 +226,23 @@ We can look at one of the files to see what basefreq extracted
 less  contamination/normal/normal.somaticSnpPos.normal_62DPDAAXX_8.alleleFreq.csv
 ```
 
-Now we need to extract and format the data so we can create a PCA and some hierarchical clusters
+Now we need to extract and format the data so we can create a PCA and some hierarchical clusters. to do this we will use a specific command of bvatools: clustfreq  
+
+
+The command is really complicated when the number of readgroup is large. So we will first generate a part of the command on the screen 
+
 
 ```{.bash}
-# Generate a part of the command
 for i in contamination/*/*.somaticSnpPos*_?.alleleFreq.csv
 do
   NAME=`echo $i | sed 's/.*somaticSnpPos.\(.*\).alleleFreq.csv/\1/g'`
   echo "--freq $NAME $i";done | tr '\n' ' '
 done
+```
 
-# Copy this output and paste it at the end of the command like so
+We will then copy this output and paste it at the end of the command bvatools. You should obtain that:
+
+```{.bash}
 java -Xmx2G -jar $BVATOOLS_JAR clustfreq \
 --snppos contamination/mutect.snpPos.tsv \
 --threads 3 \
@@ -271,7 +276,6 @@ java -Xmx2G -jar $BVATOOLS_JAR clustfreq \
 --freq tumor_AC0756ACXX_5 contamination/tumor/tumor.somaticSnpPos.tumor_AC0756ACXX_5.alleleFreq.csv  \
 --freq tumor_AD08C1ACXX_1 contamination/tumor/tumor.somaticSnpPos.tumor_AD08C1ACXX_1.alleleFreq.csv  \
 --freq tumor_BD08K8ACXX_1 contamination/tumor/tumor.somaticSnpPos.tumor_BD08K8ACXX_1.alleleFreq.csv
-
 ```
 
 Now you should have 2 files
@@ -369,10 +373,15 @@ You could do this directly in R but
 
 
 # Telomeres
-In this first step we will try to qualitatively see if the normal and tumor have different
-telomere lengths.
+In this step we will try to qualitatively see if the normal and tumor have different telomere lengths.  
 
-One way to do this is find the telomere motif.
+
+Since recently new software have been developped to do that. One of them use a similar, but more complete, approach than what we will use now.  
+
+see [Telseq](http://nar.oxfordjournals.org/content/early/2014/03/07/nar.gku181.abstract)
+
+
+The way we will do this will be to find and count the number of read showing a specific telomere motif.
 
 A good link to get various telomere repeats is the [Telomerase Database](http://telomerase.asu.edu/sequences_telomere.html)
 

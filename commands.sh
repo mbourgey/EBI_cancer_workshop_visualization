@@ -25,7 +25,6 @@ R
 library(circlize)
 
 
-## initiualize plot
 par(mar = c(1, 1, 1, 1))
 circos.par("start.degree" = 90)
 circos.par("track.height" = 0.05)
@@ -104,14 +103,13 @@ done
 less  contamination/normal/normal.somaticSnpPos.normal_62DPDAAXX_8.alleleFreq.csv
 
 
-# Generate a part of the command
 for i in contamination/*/*.somaticSnpPos*_?.alleleFreq.csv
 do
   NAME=`echo $i | sed 's/.*somaticSnpPos.\(.*\).alleleFreq.csv/\1/g'`
   echo "--freq $NAME $i";done | tr '\n' ' '
 done
 
-# Copy this output and paste it at the end of the command like so
+
 java -Xmx2G -jar $BVATOOLS_JAR clustfreq \
 --snppos contamination/mutect.snpPos.tsv \
 --threads 3 \
@@ -147,7 +145,6 @@ java -Xmx2G -jar $BVATOOLS_JAR clustfreq \
 --freq tumor_BD08K8ACXX_1 contamination/tumor/tumor.somaticSnpPos.tumor_BD08K8ACXX_1.alleleFreq.csv
 
 
-
 R
 
 
@@ -172,7 +169,7 @@ hcd = as.dendrogram(hc)
 clusDendro = dendrapply(hcd, colLab)
 
 
-data <- read.csv("sampleComparison.freq.csv", header=FALSE,row.names=1, colClasses=c("character", rep("numeric",4)))
+data <- read.csv("sampleComparison.freq.csv", header=FALSE,row.names=1, colClasses=c("character", rep("numeric",17)))
 colLanes <- rownames(data)
 colLanes[grep("normal", colLanes, invert=TRUE)] <- "blue"
 colLanes[grep("normal", colLanes)] <- "red"
@@ -186,12 +183,15 @@ plot(clusDendro, main = "Lane distances", horiz=TRUE)
 legend("top", legend = c("Normal","Tumor"), fill = cols, border = cols)
 
 par(mar=c(1,1,1,1))
+screeplot(pca, type="lines")
 plot(pca$x[,1:2])
 text(pca$x[,1:2], rownames(data), col=colLanes)
-screeplot(pca, type="lines")
 plot(pca$x[,2:3])
 text(pca$x[,2:3], rownames(data), col=colLanes)
 dev.off()
+
+
+q("yes")
 
 
 # Aligned or not, we want them all

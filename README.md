@@ -14,7 +14,7 @@ This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unpor
 ### Environment setup
 We will need an updated bvatools for these exercises
 
-``` {.bash}
+```{.bash}
 cd $HOME/ebiCancerWorkshop201407
 
 export BVATOOLS_JAR=$HOME/ebiCancerWorkshop201407/bvatools-dev.jar
@@ -48,13 +48,13 @@ Many tools are available to do this the most common know is circos. But circos i
 
 First we nee to go in the folder to do the analysis
 
-``` {.bash}
+```{.bash}
 cd /home/training/ebicancerworkshop201507/visualization/
 ```
 
 Let see what is in this folder
 
-``` {.bash}
+```{.bash}
 tree
 ```
 
@@ -70,7 +70,7 @@ Take a look of the data files.
 These are data of the same paired sample that we worked on during the SNV pratical. But this time the data are not limitated to a short piece of the chromosome 9.
 
 
-``` {.bash}
+```{.bash}
 less data/breakdancer.somatic.tsv
 less data/mutec.somatic.vcf
 less data/scones.somatic.30k.tsv
@@ -89,20 +89,21 @@ less data/scones.somatic.30k.tsv
 
 The analysis will be done using the R program
 
-``` {.bash}
+```{.bash}
 R
 ```
 
-We will use the circularize package from the cran R project. This package is dedicated to generate circular plot and had the advantage to provide pre-build function for genomics data
+We will use the circularize package from the cran R project. This package is dedicated to generate circular plot and had the advantage to provide pre-build function for genomics data. One of the main advantage of this tools is the use of bed format as input data.
 
-``` {.bash}
+
+```{.bash}
 library(circlize)
 ```
 
 We need to set-up the generic graphical parameters 
 
 
-``` {.bash}
+```{.bash}
 ## initiualize plot
 par(mar = c(1, 1, 1, 1))
 circos.par("start.degree" = 90)
@@ -110,18 +111,27 @@ circos.par("track.height" = 0.05)
 circos.par("canvas.xlim" = c(-1.3, 1.3), "canvas.ylim" = c(-1.3, 1.3))
 ```
 
-WHy ci
-## draw reference ideograms
-circos.initializeWithIdeogram(species = "hg19")
+Let's draw hg19 reference ideograms
 
-## draw 1 track for somatic mutations
+```{.bash}
+circos.initializeWithIdeogram(species = "hg19")
+```
+
+
+We can now draw 1 track for somatic mutations
+
+```{.bash}
 snv_tmp=read.table("data/mutec.somatic.vcf",comment.char="#")
 snv=cbind(snv_tmp[,1:2],snv_tmp[,2]+1)
 circos.genomicTrackPlotRegion(snv,stack=TRUE, panel.fun = function(region, value, ...) {
 	circos.genomicPoints(region, value, cex = 0.05, pch = 9,col='orange' , ...)
 })
+```
 
-## draw 2 tracks for cnvs
+
+Let's draw the 2 tracks for cnvs. One track for duplication in red and one blue track for deletion.
+
+```{.bash}
 cnv=read.table("data/scones.somatic.30k.tsv",header=T)
 dup=cnv[cnv[,5]>2,]
 del=cnv[cnv[,5]<2,]
@@ -131,8 +141,14 @@ circos.genomicTrackPlotRegion(dup, stack = TRUE,panel.fun = function(region, val
 circos.genomicTrackPlotRegion(del, stack = TRUE,panel.fun = function(region, value, ...) {
         circos.genomicRect(region, value, col = "blue",bg.border = NA, cex=1 , ...)
 })
+```
 
-## draw 3 tracks + links for SVs
+We can cleary see a massive deletion in the chromosome 3, which is a very common observation for kidney cancer (85% of tumor)  
+
+
+To  finsh we just need to draw 3 tracks + positional links to represent SVs
+
+```{.bash}
 sv=read.table("data/breakdancer.somatic.tsv",header=T)
 typeE=c("DEL","INS","INV")
 colE=c("blue","black","green")
@@ -152,18 +168,22 @@ if (dim(bed1)[1] > 0 & dim(bed2)[1] > 0) {
                 circos.link(bed1[i,1],bed1[i,2],bed2[i,1],bed2[i,2])
         }
 }
+```
 
+A good graph needs title and legends
+
+```{.bash}
 title("Somatic calls (SNV - SV - CNV) of sample LR376")
 legend(0.7,1.4,legend=c("SNV", "CNV-DUPLICATION","CNV-DELETION","SV-DELETION","SV-INSERTION","SV-INVERSION"),col=c("orange","red","blue","blue","black","green","red"),pch=c(16,15,15,16,16,16,16,16),cex=0.75,title="Tracks:",bty='n')
 legend(0.6,0.95,legend="SV-TRANSLOCATION",col="black",lty=1,cex=0.75,lwd=1.2,bty='n')
-
-##close file
-## open output
-pdf(file="somatic_circular_plot.pdf", height=8, width=8, compress=TRUE)
-
-dev.off()
 ```
 
+you should obtain a plot like this one
+![circular_view](img/somatic_circular_plot.pdf)
+
+Exercice:
+**Generate the graph and save it into a pdf file** 
+[solution](solution/_image1.md)
 
 # Substitution plots
 After calling somatic mutations on WGS, we often want to see  
@@ -173,7 +193,7 @@ After calling somatic mutations on WGS, we often want to see
 
 There are a milion ways to do this, we will try one.
 
-First, as we did with MuSiC we need to figure out what parts of the genome are callable accross all the samples.
+First, we need to figure out what parts of the genome are callable accross all the samples.
 To do this we will use a GATK tool called CallableLoci
 
 ``` {.bash}
@@ -186,7 +206,7 @@ do
     -I alignment/${i}/${i}.sorted.dup.recal.bam \
     --minDepth 10 --maxDepth 1000 --minDepthForLowMAPQ 10 \
     --minMappingQuality 10 --minBaseQuality 15 \
-    -L 19 &
+    -L 9 &
 done
 wait
 ```

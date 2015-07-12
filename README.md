@@ -330,14 +330,14 @@ clusDendro = dendrapply(hcd, colLab)
 Generate PCA on the data
 
 ```{.bash}
-data <- read.csv("sampleComparison.freq.csv", header=FALSE,row.names=1, colClasses=c("character", rep("numeric",4)))
+data <- read.csv("sampleComparison.freq.csv", header=FALSE,row.names=1, colClasses=c("character", rep("numeric",17)))
 colLanes <- rownames(data)
 colLanes[grep("normal", colLanes, invert=TRUE)] <- "blue"
 colLanes[grep("normal", colLanes)] <- "red"
 pca <- prcomp(data)
 ```
 
-Make plot: a pdf file containing the hierchical clustering (dendogram) + Screeplot + PCA (COMP1 vs. COMP2)
+Make plot: a pdf file containing the hierchical clustering (dendogram) + Screeplot + PCA (COMP1 vs. COMP2) + PCA (COMP2 vs. COMP3)
 
 ```{.bash}
 pdf("sampleComparison.laneMix.pdf")
@@ -347,15 +347,21 @@ plot(clusDendro, main = "Lane distances", horiz=TRUE)
 legend("top", legend = c("Normal","Tumor"), fill = cols, border = cols)
 
 par(mar=c(1,1,1,1))
+screeplot(pca, type="lines")
 plot(pca$x[,1:2])
 text(pca$x[,1:2], rownames(data), col=colLanes)
-screeplot(pca, type="lines")
 plot(pca$x[,2:3])
 text(pca$x[,2:3], rownames(data), col=colLanes)
 dev.off()
 ```
 
+Finally exit R
+```{.bash}
+q("yes")
+```
+
 Look at the graphs.
+
 
 You could do this directly in R but
 1. The basefreq format is not simple to parse

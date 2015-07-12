@@ -87,7 +87,7 @@ The analysis will be done using the R program
 R
 ```
 
-We will use the circularize package from the cran R project. This package is dedicated to generate circular plot and had the advantage to provide pre-build function for genomics data. One of the main advantage of this tools is the use of bed format as input data.
+We will use the circlize package from the cran R project. This package is dedicated to generate circular plot and had the advantage to provide pre-build function for genomics data. One of the main advantage of this tools is the use of bed format as input data.
 
 
 ```{.bash}
@@ -182,7 +182,7 @@ Exercice:
 [solution](solution/_image1.md)
 
 
-Finally Exit R
+Finally exit R
 
 ```{.bash}
 q(save=T)
@@ -192,11 +192,17 @@ q(save=T)
 # Finding contamination
 This is more to QC but it can be very helpful to find strange patterns in your samples.
 
-Extract positions of somatic variants
+Create output folder contamination
 
 ```{.bash}
-grep -v INDEL pairedVariants/mpileup.vcf \
- | perl -ne 'my @values=split("\t"); my ($clr) = $values[7] =~ /CLR=(\d+)/; if(defined($clr) && $clr >= 45 && $values[5] >= 70) {print "$values[0]\t$values[1]\t$values[3]\t$values[4]\n"}' \
+mkdir -p contamination
+```
+
+Extract positions of somatic variants from the SNV pratical 
+
+```{.bash}
+grep SOMATIC ../SNV/pairedVariants/mutect.vcf \
+ | awk 'BEGIN {OFS="\t"} {print $1 , $2 , $4 , $5}' \
  > pairedVariants/mpileup.snpPos.tsv
 ```
 
@@ -206,10 +212,11 @@ BVATools does this
 ```{.bash}
 for i in normal tumor
 do
-  java7 -Xmx2G -jar $BVATOOLS_JAR basefreq \
-    --pos pairedVariants/mpileup.snpPos.tsv \
-    --bam alignment/${i}/${i}.sorted.dup.recal.bam \
-    --out alignment/${i}/${i}.somaticSnpPos \
+  mkdir -p contamination/${i}
+  java -Xmx2G -jar $BVATOOLS_JAR basefreq \
+    --pos ../SNV/pairedVariants/mpileup.snpPos.tsv \
+    --bam ../SNV/alignment/${i}/${i}.sorted.dup.recal.bam \
+    --out contamination/${i}/${i}.somaticSnpPos \
     --perRG
 done
 ```
@@ -217,7 +224,7 @@ done
 We can look at one of the files to see what basefreq extracted
 
 ```{.bash}
-less -S alignment/normal/normal.somaticSnpPos.normal_C0LWRACXX_1.alleleFreq.csv
+less  contaminationt/normal/normal.somaticSnpPos.normal_C0LWRACXX_1.alleleFreq.csv
 ```
 
 Now we need to extract and format the data so we can create a PCA and some hierarchical clusters

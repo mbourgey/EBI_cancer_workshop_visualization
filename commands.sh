@@ -82,22 +82,26 @@ legend(0.6,0.95,legend="SV-TRANSLOCATION",col="black",lty=1,cex=0.75,lwd=1.2,bty
 q(save=T)
 
 
-grep -v INDEL pairedVariants/mpileup.vcf \
- | perl -ne 'my @values=split("\t"); my ($clr) = $values[7] =~ /CLR=(\d+)/; if(defined($clr) && $clr >= 45 && $values[5] >= 70) {print "$values[0]\t$values[1]\t$values[3]\t$values[4]\n"}' \
+mkdir -p contamination
+
+
+grep SOMATIC ../SNV/pairedVariants/mutect.vcf \
+ | awk 'BEGIN {OFS="\t"} {print $1 , $2 , $4 , $5}' \
  > pairedVariants/mpileup.snpPos.tsv
 
 
 for i in normal tumor
 do
-  java7 -Xmx2G -jar $BVATOOLS_JAR basefreq \
-    --pos pairedVariants/mpileup.snpPos.tsv \
-    --bam alignment/${i}/${i}.sorted.dup.recal.bam \
-    --out alignment/${i}/${i}.somaticSnpPos \
+  mkdir -p contamination/${i}
+  java -Xmx2G -jar $BVATOOLS_JAR basefreq \
+    --pos ../SNV/pairedVariants/mpileup.snpPos.tsv \
+    --bam ../SNV/alignment/${i}/${i}.sorted.dup.recal.bam \
+    --out contamination/${i}/${i}.somaticSnpPos \
     --perRG
 done
 
 
-less -S alignment/normal/normal.somaticSnpPos.normal_C0LWRACXX_1.alleleFreq.csv
+less  contaminationt/normal/normal.somaticSnpPos.normal_C0LWRACXX_1.alleleFreq.csv
 
 
 # Generate a part of the command

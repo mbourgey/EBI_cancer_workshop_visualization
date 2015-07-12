@@ -172,10 +172,10 @@ hcd = as.dendrogram(hc)
 clusDendro = dendrapply(hcd, colLab)
 
 
-data <- read.csv("sampleComparison.freq.csv", header=FALSE,row.names=1, colClasses=c("character", rep("numeric",4))
+data <- read.csv("sampleComparison.freq.csv", header=FALSE,row.names=1, colClasses=c("character", rep("numeric",4)))
 colLanes <- rownames(data)
-colLanes[grep(normalName, colLanes, invert=TRUE)] <- "blue"
-colLanes[grep(normalName, colLanes)] <- "red"
+colLanes[grep("normal", colLanes, invert=TRUE)] <- "blue"
+colLanes[grep("normal", colLanes)] <- "red"
 pca <- prcomp(data)
 
 

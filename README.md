@@ -203,7 +203,7 @@ Extract positions of somatic variants from the SNV pratical
 ```{.bash}
 grep SOMATIC ../SNV/pairedVariants/mutect.vcf \
  | awk 'BEGIN {OFS="\t"} {print $1 , $2 , $4 , $5}' \
- > pairedVariants/mpileup.snpPos.tsv
+ > contamination/mutect.snpPos.tsv
 ```
 
 Now we have our positions, we need the read counts *per lane* for these positions.
@@ -214,7 +214,7 @@ for i in normal tumor
 do
   mkdir -p contamination/${i}
   java -Xmx2G -jar $BVATOOLS_JAR basefreq \
-    --pos ../SNV/pairedVariants/mpileup.snpPos.tsv \
+    --pos contamination/mutect.snpPos.tsv \
     --bam ../SNV/alignment/${i}/${i}.sorted.dup.recal.bam \
     --out contamination/${i}/${i}.somaticSnpPos \
     --perRG

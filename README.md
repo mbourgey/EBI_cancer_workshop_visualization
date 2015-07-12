@@ -224,22 +224,22 @@ done
 We can look at one of the files to see what basefreq extracted
 
 ```{.bash}
-less  contaminationt/normal/normal.somaticSnpPos.normal_C0LWRACXX_1.alleleFreq.csv
+less  contamination/normal/normal.somaticSnpPos.normal_62DPDAAXX_8.alleleFreq.csv
 ```
 
 Now we need to extract and format the data so we can create a PCA and some hierarchical clusters
 
 ```{.bash}
 # Generate a part of the command
-for i in alignment/*/*.somaticSnpPos*_?.alleleFreq.csv
+for i in contamination/*/*.somaticSnpPos*_?.alleleFreq.csv
 do
   NAME=`echo $i | sed 's/.*somaticSnpPos.\(.*\).alleleFreq.csv/\1/g'`
   echo "--freq $NAME $i";done | tr '\n' ' '
 done
 
 # Copy this output and paste it at the end of the command like so
-java7 -Xmx2G -jar ~/bvatools-dev.jar clustfreq \
---snppos pairedVariants/mpileup.snpPos.tsv \
+java -Xmx2G -jar $BVATOOLS_JAR clustfreq \
+--snppos contamination/mutect.snpPos.tsv \
 --threads 3 \
 --prefix sampleComparison \
 --outputFreq \

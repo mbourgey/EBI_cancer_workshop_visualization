@@ -185,7 +185,7 @@ Exercice:
 Finally exit R
 
 ```{.bash}
-q(save=T)
+q("yes")
 ```
 
 

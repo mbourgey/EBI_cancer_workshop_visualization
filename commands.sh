@@ -148,23 +148,14 @@ java -Xmx2G -jar $BVATOOLS_JAR clustfreq \
 
 
 
-fileName <- "sampleComparison"
-normalName <- "normal"
+R
 
-
-distFile <- paste(fileName, ".dist.csv",sep="")
-
-#distName.noext = sub("[.][^.]*$", "", distName, perl=TRUE)
-
-dataMatrix <- read.csv(distFile, row.names=1, header=TRUE)
-hc <- hclust(as.dist(dataMatrix));
-hcd = as.dendrogram(hc)
 
 colLab <- function(n) {
     if (is.leaf(n)) {
         a <- attributes(n)
         labCol = c("blue");
-        if(grepl(normalName, a$label)) {
+        if(grepl("normal", a$label)) {
           labCol = c("red");
         }
         attr(n, "nodePar") <- c(a$nodePar, lab.col = labCol)
@@ -172,23 +163,25 @@ colLab <- function(n) {
     n
 }
 
-# using dendrapply
+
+dataMatrix <- read.csv("sampleComparison.dist.csv", row.names=1, header=TRUE)
+hc <- hclust(as.dist(dataMatrix));
+hcd = as.dendrogram(hc)
+
+
 clusDendro = dendrapply(hcd, colLab)
-cols <- c("red","blue")
 
 
-freqFile <- paste(fileName, ".freq.csv",sep="")
-data <- read.csv(freqFile, header=FALSE,row.names=1, colClasses=c("character", rep("numeric",4))
+data <- read.csv("sampleComparison.freq.csv", header=FALSE,row.names=1, colClasses=c("character", rep("numeric",4))
 colLanes <- rownames(data)
 colLanes[grep(normalName, colLanes, invert=TRUE)] <- "blue"
 colLanes[grep(normalName, colLanes)] <- "red"
 pca <- prcomp(data)
 
-# make plot
-pdfFile <- paste(fileName,".laneMix.pdf", sep="")
-pdfFile
-pdf(pdfFile)
+
+pdf("sampleComparison.laneMix.pdf")
 par(mar=c(3,3,1,12))
+cols <- c("red","blue")
 plot(clusDendro, main = "Lane distances", horiz=TRUE)
 legend("top", legend = c("Normal","Tumor"), fill = cols, border = cols)
 
@@ -199,19 +192,6 @@ screeplot(pca, type="lines")
 plot(pca$x[,2:3])
 text(pca$x[,2:3], rownames(data), col=colLanes)
 dev.off()
-
-pngFile <- paste(fileName,".laneMix.png", sep="")
-pngFile
-png(pngFile, type="cairo", width=1920, height=1080)
-par(mar=c(3,3,1,12))
-par(mfrow=c(2,1))
-plot(clusDendro, main = "Lane distances", horiz=TRUE)
-legend("top", legend = c("Normal","Tumor"), fill = cols, border = cols)
-
-plot(pca$x[,1:2])
-text(pca$x[,1:2], rownames(data), col=colLanes)
-dev.off()
-
 
 
 # Aligned or not, we want them all

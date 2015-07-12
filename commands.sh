@@ -86,7 +86,7 @@ mkdir -p contamination
 
 
 grep SOMATIC ../SNV/pairedVariants/mutect.vcf \
- | awk 'BEGIN {OFS="\t"} {print $1 , $2 , $4 , $5}' \
+ | awk 'BEGIN {OFS="\t"} NR > 1 {print $1 , $2 , $4 , $5}' \
  > contamination/mutect.snpPos.tsv
 
 

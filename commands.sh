@@ -79,7 +79,7 @@ legend(0.7,1.4,legend=c("SNV", "CNV-DUPLICATION","CNV-DELETION","SV-DELETION","S
 legend(0.6,0.95,legend="SV-TRANSLOCATION",col="black",lty=1,cex=0.75,lwd=1.2,bty='n')
 
 
-q(save=T)
+q("yes")
 
 
 mkdir -p contamination

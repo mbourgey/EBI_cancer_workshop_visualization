@@ -385,21 +385,20 @@ The way we will do this will be to find and count the number of read showing a s
 
 A good link to get various telomere repeats is the [Telomerase Database](http://telomerase.asu.edu/sequences_telomere.html)
 
-First step, count the number of reads with these repeats.
+First step, count the number of reads with these repeats. Aligned or not, we want them all.
 
 ```{.bash}
-# Aligned or not, we want them all
-samtools view alignment/normal/normal.sorted.bam | awk '{if($10 ~ /TTAGGGTTAGGGTTAGGG/) {SUM++}} END {print "NbTeloReads",SUM}'
-samtools view alignment/tumor/tumor.sorted.bam | awk '{if($10 ~ /TTAGGGTTAGGGTTAGGG/) {SUM++}} END {print "NbTeloReads",SUM}'
+samtools view ../SNV/alignment/normal/normal.sorted.bam | awk '{if($10 ~ /TTAGGGTTAGGGTTAGGG/) {SUM++}} END {print "NbTeloReads",SUM}'
+samtools view ../SNV/alignment/tumor/tumor.sorted.bam | awk '{if($10 ~ /TTAGGGTTAGGGTTAGGG/) {SUM++}} END {print "NbTeloReads",SUM}'
 ```
 
-Why did we put multiple copied of the repeat in the search? [Solution](https://github.com/lletourn/Workshops/blob/ebiCancerWorkshop201407/solutions/_telo.ex1.md)  
+Why did we put multiple copied of the repeat in the search? [Solution](solutions/_telo1.md)  
 
-Next look in the alignments summary file we generated yesterday and extract the number of aligned reads.
+Next look in the alignments summary file we generated in the SNV pratical and extract the number of aligned reads.
 
 ```{.bash}
-less -S alignment/normal/normal.sorted.dup.recal.metric.alignment.tsv
-less -S alignment/tumor/tumor.sorted.dup.recal.metric.alignment.tsv
+less -S ../SNV/alignment/normal/normal.sorted.dup.recal.metric.alignment.tsv
+less -S ../SNV/alignment/tumor/tumor.sorted.dup.recal.metric.alignment.tsv
 ```
 
 Now the rest can be done in good old excel.

@@ -366,8 +366,13 @@ q("yes")
 
 Look at the graphs.
 
-Based on the subset of data we have here a potential library issue could be present. But when looking at the enitre set of somatic mutations we can this is not true.
-![somatic library clustering](img/somatic_clustering.png)
+Based on the subset of data we have here a potential library issue could be present.  
+
+
+But when looking at the enitre set of somatic mutations we can this is not true.
+![somatic library clustering](img/somatic_clustering.png)  
+
+
 
 You could do this directly in R but
 1. The basefreq format is not simple to parse

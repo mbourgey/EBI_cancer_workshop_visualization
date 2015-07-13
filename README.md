@@ -383,13 +383,8 @@ You could do this directly in R but
 
 Many other visualizations of cancer data are possible. we will not go further in this pratical. But here is non-exhaustive list of other interesting visualization of DNA-seq cancer data:  
 
-1. genomic context of somatic mutations
-
-![Somatic mutation context](img/somatic_context.png)
-
-2. representation of a possible transcriptional bias for somatic mutation
-
-![transcriptional bias](img/somatic_transciptional_bias.png)
+1. genomic context of somatic mutations ![Somatic mutation context](img/somatic_context.png)
+2. representation of a possible transcriptional bias for somatic mutation ![transcriptional bias](img/somatic_transciptional_bias.png)
 
 
 

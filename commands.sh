@@ -194,11 +194,3 @@ dev.off()
 q("yes")
 
 
-samtools view ../SNV/alignment/normal/normal.sorted.bam | awk '{if($10 ~ /TTAGGGTTAGGGTTAGGG/) {SUM++}} END {print "NbTeloReads",SUM}'
-samtools view ../SNV/alignment/tumor/tumor.sorted.bam | awk '{if($10 ~ /TTAGGGTTAGGGTTAGGG/) {SUM++}} END {print "NbTeloReads",SUM}'
-
-
-less -S ../SNV/alignment/normal/normal.sorted.dup.recal.metric.alignment.tsv
-less -S ../SNV/alignment/tumor/tumor.sorted.dup.recal.metric.alignment.tsv
-
-

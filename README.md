@@ -366,46 +366,26 @@ q("yes")
 
 Look at the graphs.
 
+Based on the subset of data we have here a potential library issue could be present. But when looking at the enitre set of somatic mutations we can this is not true.
+![somatic library clustering](img/somatic_clustering.png)
 
 You could do this directly in R but
 1. The basefreq format is not simple to parse
 2. When you have thousands of somatics, and/or hundreds of samples, R struggles to build de pairwise distance and the PCA. This is why we precompute it in java before.
 
 
-# Telomeres
-In this step we will try to qualitatively see if the normal and tumor have different telomere lengths.  
+# Other visualizations
 
+Many other visualizations of cancer data are possible. we will not go further in this pratical. But here is non-exhaustive list of other interesting visualization of DNA-seq cancer data:  
 
-Since recently new software have been developped to do that. One of them use a similar, but more complete, approach than what we will use now.  
+1. genomic context of somatic mutations
 
-see [Telseq](http://nar.oxfordjournals.org/content/early/2014/03/07/nar.gku181.abstract)
+![Somatic mutation context](img/somatic_context.png)
 
+2. representation of a possible transcriptional bias for somatic mutation
 
-The way we will do this will be to find and count the number of read showing a specific telomere motif.
+![transcriptional bias](img/somatic_transciptional_bias.png)
 
-A good link to get various telomere repeats is the [Telomerase Database](http://telomerase.asu.edu/sequences_telomere.html)
-
-First step, count the number of reads with these repeats. Aligned or not, we want them all.
-
-```{.bash}
-samtools view ../SNV/alignment/normal/normal.sorted.bam | awk '{if($10 ~ /TTAGGGTTAGGGTTAGGG/) {SUM++}} END {print "NbTeloReads",SUM}'
-samtools view ../SNV/alignment/tumor/tumor.sorted.bam | awk '{if($10 ~ /TTAGGGTTAGGGTTAGGG/) {SUM++}} END {print "NbTeloReads",SUM}'
-```
-
-Why did we put multiple copied of the repeat in the search? [Solution](solutions/_telo1.md)  
-
-Next look in the alignments summary file we generated in the SNV pratical and extract the number of aligned reads.
-
-```{.bash}
-less -S ../SNV/alignment/normal/normal.sorted.dup.recal.metric.alignment.tsv
-less -S ../SNV/alignment/tumor/tumor.sorted.dup.recal.metric.alignment.tsv
-```
-
-Now the rest can be done in good old excel.
-
-Open a sheet up, load up your numbers and compute the fold change between normal and tumor.
-
-This case is rather boring, there practically is no change.
 
 
 ## Aknowledgments

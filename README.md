@@ -217,7 +217,6 @@ are now in the first track.
 
 
 ```{.bash}
-circos.clear()
 circos.trackPlotRegion(factors = a$factor, y = a$y,panel.fun = function(x, y) {
 	circos.axis()
 })

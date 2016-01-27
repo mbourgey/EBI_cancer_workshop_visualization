@@ -10,7 +10,11 @@ Copy number variations
 Structural variants (insertion, inversion, deletion, duplication, translocation)
 
 A common visualization of these data is to give an overview of change for the 23 chromosome of the genome in circular view.
+
+
 ![PNAS_circos](img/circos-cancer-cell.png)
+
+
 from PNAS journal
    
 

@@ -18,48 +18,63 @@ A common visualization of these data is to give an overview of change for the 23
 from PNAS journal
    
 
-# Circular representation of your calls
-Many tools are available to do this the most common know is circos. But circos is a really not user friendly. In this tutoriel we show you an easy alternative to build circular representation of genomic data.
+## Circular representation of your calls
+Many tools are available to do this the most common know is circos. But circos is a really not user friendly. In this tutoriel we show you an easy alternative to build circular representation of genomic data. to do that we will use the circlize R package
 
-First we nee to go in the folder to do the analysis
+## General presentation of circlize
+
+Author: Zuguang Gu
+
+Gu Z et. al. (2014) circlize implements and enhances circular visualization in R. Bioinformatics.
+
+
+Circular layout is very useful to represent complicated information, especially for genomic data. It
+has advantages to visualize data with long axes or large amount of categories, described with different
+measurements. It is also effective to visualize relations between elements.
+
+### Principle of design
+Since most of the figures are composed of simple graphics, such as points, lines, polygon (for filled
+colors) et al, circlize implements low-level graphic functions for adding graphics in circular layout, so
+that more higher level graphics can be easily comprised by low-level graphics. This principle ensures
+the generality that types of high-level graphics are not restricted by the software but determined by
+users.
+
+Currently there are following graphic functions that can be used for plotting, they are similar to
+the functions without “circos.” prefix from the traditional graphic engine :
+
+• circos.points: add points in a cell, similar as points.
+• circos.lines: add lines in a cell, similar as lines.
+• circos.rect: add rectangle in a cell, similar as rect.
+• circos.polygon: add polygon in a cell, similar as polygon.
+• circos.text: add text in a cell, similar as text.
+• circos.axis: add axis in a cell, functionally similar as axis but with more features.
+• circos.link: this maybe the unique feature for circular layout to represent relationships between
+elements.
+
+For adding points, lines and text in cells through the whole track (among several sectors), the
+following functions are available:
+• circos.trackPoints: this can be replaced by circos.points through a for loop.
+• circos.trackLines: this can be replaced by circos.lines through a for loop.
+
+For Genomics data the author provides a set of predefine functions (circos.genomic...) 
+
+
+## Genomics data representation
+First we need to get the data
 
 ```{.bash}
-cd /home/training/ebicancerworkshop201507/visualization/
+git clone git@github.com:mbourgey/EBI_cancer_workshop_visualization.git
 ```
 
-Let see what is in this folder
+Let see what is in the data folder
 
 ```{.bash}
-tree
+ls data
 ```
 
- data/
-  -- breakdancer.somatic.tsv
-  -- mutec.somatic.vcf
-  -- scones.somatic.30k.tsv
- src/
-  -- commands.sh
-
-Take a look of the data files.
-
-These are data of the same paired sample that we worked on during the SNV pratical. But this time the data are not limitated to a short piece of the chromosome 9.
-
-
-```{.bash}
-less data/breakdancer.somatic.tsv
-less data/mutec.somatic.vcf
-less data/scones.somatic.30k.tsv
-```
-
-
-**What can you see fron this data ?**
-[solution](solution/_data1.md)
-
-**Why don't we use the vcf format for all type of call?**
-[solution](solution/_data2.md)
-
-**Did you notice something different from the SNV pratical ?**
-[solution](solution/_data3.md)
+- breakdancer.somatic.tsv
+- mutec.somatic.vcf
+- scones.somatic.30k.tsv
 
 
 The analysis will be done using the R program
@@ -85,7 +100,7 @@ circos.par("track.height" = 0.05)
 circos.par("canvas.xlim" = c(-1.3, 1.3), "canvas.ylim" = c(-1.3, 1.3))
 ```
 
-Let's draw hg19 reference ideograms
+Let's draw human genome hg19 reference ideograms
 
 ```{.bash}
 circos.initializeWithIdeogram(species = "hg19")
@@ -155,220 +170,129 @@ legend(0.6,0.95,legend="SV-TRANSLOCATION",col="black",lty=1,cex=0.75,lwd=1.2,bty
 you should obtain a plot like this one
 ![circular_view](img/somatic_circular_plot.pdf)
 
-Exercice:
+## A generic circular plot for non-genomic data
 
+this is an example coming from the main vignette of the package
 
-**Generate the graph and save it into a pdf file** 
-[solution](solution/_image1.md)
-
-
-Finally exit R
-
-```{.bash}
-q("yes")
-```
-
-
-# Finding contamination
-This is more to QC but it can be very helpful to find strange patterns in your samples.
-
-Create output folder contamination
+Following is an example to show the basic feature and usage of circlize package. First let’s generate
+some random data. 
+There needs a factor to represent categories, values on x-axis, and values on y-axis.
 
 ```{.bash}
-mkdir -p contamination
-```
+set.seed(999)
+n = 1000
+a = data.frame(factor = sample(letters[1:8], n, replace = TRUE),
+x = rnorm(n), y = runif(n))
 
-Extract positions of somatic variants from the SNV pratical 
 
-```{.bash}
-grep SOMATIC ../SNV/pairedVariants/mutect.vcf \
- | awk 'BEGIN {OFS="\t"} NR > 1 {print $1 , $2 , $4 , $5}' \
- > contamination/mutect.snpPos.tsv
-```
+### First initialize the layout 
 
-Now we have our positions, we need the read counts *per lane* for these positions.
-BVATools does this
+we need to reset the graphic parameters and internal variables, so that it will not mess up
+your next plot. 
 
-```{.bash}
-for i in normal tumor
-do
-  mkdir -p contamination/${i}
-  java -Xmx2G -jar $BVATOOLS_JAR basefreq \
-    --pos contamination/mutect.snpPos.tsv \
-    --bam ../SNV/alignment/${i}/${i}.sorted.dup.recal.bam \
-    --out contamination/${i}/${i}.somaticSnpPos \
-    --perRG
-done
-```
-
-We can look at one of the files to see what basefreq extracted
+In this step, circos.initialize allocates sectors in the circle according
+to ranges of x-values in different categories. 
 
 ```{.bash}
-less  contamination/normal/normal.somaticSnpPos.normal_62DPDAAXX_8.alleleFreq.csv
+circos.clear()
+par(mar = c(1, 1, 1, 1), lwd = 0.1, cex = 0.7)
+circos.par("track.height" = 0.1)
+circos.initialize(factors = a$factor, x = a$x)
 ```
 
-Now we need to extract and format the data so we can create a PCA and some hierarchical clusters. to do this we will use a specific command of bvatools: clustfreq  
+### Draw the first track. 
 
+Before drawing any track we need to know that all tracks should
+firstly be created by circos.trackPlotRegion, then those low-level functions can be applied. Since x-lims for cells in the track have already been defined
+in the initialization step, here we only need to specify the y-lim for each cell, either by y or ylim
+argument.
 
-The command is really complicated when the number of readgroup is large. So we will first generate a part of the command on the screen 
+We also add axes in the first track, The axis for each cell is added by panel.fun argument.
+circos.trackPlotRegion creates plotting region cell by cell and the panel.fun is actually executed
+immediately after the creation of the plotting region for a certain cell. So panel.fun actually means
+adding graphics in the “current cell”. After that, we add points through the whole track by circos.trackPoints.
+Finally, add two texts in a certain cell (the cell is specified by sector.index and track.index argument).
+When adding the second text, we do not specify track.index because the package knows we
+are now in the first track.
 
 
 ```{.bash}
-for i in contamination/*/*.somaticSnpPos*_?.alleleFreq.csv
-do
-  NAME=`echo $i | sed 's/.*somaticSnpPos.\(.*\).alleleFreq.csv/\1/g'`
-  echo "--freq $NAME $i";done | tr '\n' ' '
-done
+circos.clear()
+circos.trackPlotRegion(factors = a$factor, y = a$y,panel.fun = function(x, y) {
+	circos.axis()
+})
+col = rep(c("#FF0000", "#00FF00"), 4)
+circos.trackPoints(a$factor, a$x, a$y, col = col, pch = 16, cex = 0.5)
+circos.text(-1, 0.5, "left", sector.index = "a", track.index = 1)
+circos.text(1, 0.5, "right", sector.index = "a")
 ```
 
-We will then copy this output and paste it at the end of the command bvatools. You should obtain that:
+
+### Draw the second track.
+
+We use circos.trackHist to add histograms in the track. The
+function also creates a new track because drawing histogram is really high level, so we do not need to
+call circos.trackPlotRegion here. 
+
 
 ```{.bash}
-java -Xmx2G -jar $BVATOOLS_JAR clustfreq \
---snppos contamination/mutect.snpPos.tsv \
---threads 3 \
---prefix sampleComparison \
---outputFreq \
---freq normal_62DPDAAXX_8 contamination/normal/normal.somaticSnpPos.normal_62DPDAAXX_8.alleleFreq.csv \
---freq normal_62DVGAAXX_1 contamination/normal/normal.somaticSnpPos.normal_62DVGAAXX_1.alleleFreq.csv  \
---freq normal_62MK3AAXX_5 contamination/normal/normal.somaticSnpPos.normal_62MK3AAXX_5.alleleFreq.csv \
---freq normal_A81DF6ABXX_1 contamination/normal/normal.somaticSnpPos.normal_A81DF6ABXX_1.alleleFreq.csv \
---freq normal_A81DF6ABXX_2 contamination/normal/normal.somaticSnpPos.normal_A81DF6ABXX_2.alleleFreq.csv \
---freq normal_BC04D4ACXX_2 contamination/normal/normal.somaticSnpPos.normal_BC04D4ACXX_2.alleleFreq.csv  \
---freq normal_BC04D4ACXX_3 contamination/normal/normal.somaticSnpPos.normal_BC04D4ACXX_3.alleleFreq.csv \
---freq normal_BD06UFACXX_4 contamination/normal/normal.somaticSnpPos.normal_BD06UFACXX_4.alleleFreq.csv  \
---freq normal_BD06UFACXX_5 contamination/normal/normal.somaticSnpPos.normal_BD06UFACXX_5.alleleFreq.csv  \
---freq tumor_62DU0AAXX_8 contamination/tumor/tumor.somaticSnpPos.tumor_62DU0AAXX_8.alleleFreq.csv  \
---freq tumor_62DU6AAXX_8 contamination/tumor/tumor.somaticSnpPos.tumor_62DU6AAXX_8.alleleFreq.csv  \
---freq tumor_62DUUAAXX_8 contamination/tumor/tumor.somaticSnpPos.tumor_62DUUAAXX_8.alleleFreq.csv  \
---freq tumor_62DUYAAXX_7 contamination/tumor/tumor.somaticSnpPos.tumor_62DUYAAXX_7.alleleFreq.csv  \
---freq tumor_62DVMAAXX_4 contamination/tumor/tumor.somaticSnpPos.tumor_62DVMAAXX_4.alleleFreq.csv  \
---freq tumor_62DVMAAXX_5 contamination/tumor/tumor.somaticSnpPos.tumor_62DVMAAXX_5.alleleFreq.csv  \
---freq tumor_62DVMAAXX_6 contamination/tumor/tumor.somaticSnpPos.tumor_62DVMAAXX_6.alleleFreq.csv  \
---freq tumor_62DVMAAXX_7 contamination/tumor/tumor.somaticSnpPos.tumor_62DVMAAXX_7.alleleFreq.csv  \
---freq tumor_62DVMAAXX_8 contamination/tumor/tumor.somaticSnpPos.tumor_62DVMAAXX_8.alleleFreq.csv  \
---freq tumor_62JREAAXX_3 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_3.alleleFreq.csv  \
---freq tumor_62JREAAXX_4 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_4.alleleFreq.csv  \
---freq tumor_62JREAAXX_5 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_5.alleleFreq.csv  \
---freq tumor_62JREAAXX_6 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_6.alleleFreq.csv  \
---freq tumor_62JREAAXX_7 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_7.alleleFreq.csv  \
---freq tumor_62JREAAXX_8 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_8.alleleFreq.csv  \
---freq tumor_AC0756ACXX_4 contamination/tumor/tumor.somaticSnpPos.tumor_AC0756ACXX_4.alleleFreq.csv  \
---freq tumor_AC0756ACXX_5 contamination/tumor/tumor.somaticSnpPos.tumor_AC0756ACXX_5.alleleFreq.csv  \
---freq tumor_AD08C1ACXX_1 contamination/tumor/tumor.somaticSnpPos.tumor_AD08C1ACXX_1.alleleFreq.csv  \
---freq tumor_BD08K8ACXX_1 contamination/tumor/tumor.somaticSnpPos.tumor_BD08K8ACXX_1.alleleFreq.csv
+bgcol = rep(c("#EFEFEF", "#CCCCCC"), 4)
+circos.trackHist(a$factor, a$x, bg.col = bgcol, col = NA)
 ```
 
-Now you should have 2 files
-sampleComparison.freq.csv
-sampleComparison.dist.csv
+### Draw the third track. 
 
-One contains vectors of snp frequences, the other contains the pairwise Euclidean distance
-Now let's plot the result in R
+Here some meta data for the current cell can be obtained by
+get.cell.meta.data. This function needs sector.index and track.index arguments, and if they are
+not specified, it means it is the current sector index and the current track index.
 
 ```{.bash}
-R
+circos.trackPlotRegion(factors = a$factor, x = a$x, y = a$y,
+panel.fun = function(x, y) {
+grey = c("#FFFFFF", "#CCCCCC", "#999999")
+sector.index = get.cell.meta.data("sector.index")
+xlim = get.cell.meta.data("xlim")
+ylim = get.cell.meta.data("ylim")
+circos.text(mean(xlim), mean(ylim), sector.index)
+circos.points(x[1:10], y[1:10], col = "red", pch = 16, cex = 0.6)
+circos.points(x[11:20], y[11:20], col = "blue", cex = 0.6)
+})
 ```
 
-First we need to implement a small function to assign different color to the library in function of which sample they belong to
+
+### Draw the fourth track. 
+
+Here you can choose different line types which is similar as
+type argument in lines.
+
 
 ```{.bash}
-colLab <- function(n) {
-    if (is.leaf(n)) {
-        a <- attributes(n)
-        labCol = c("blue");
-        if(grepl("normal", a$label)) {
-          labCol = c("red");
-        }
-        attr(n, "nodePar") <- c(a$nodePar, lab.col = labCol)
-    }
-    n
-}
+circos.trackPlotRegion(factors = a$factor, y = a$y)
+circos.trackLines(a$factor[1:100], a$x[1:100], a$y[1:100], type = "h")
 ```
 
-Load data, perform clutering and generate dendogram
+
+###Draw links. 
+
+Links can be from point to point, point to interval or interval to interval.
+
 
 ```{.bash}
-dataMatrix <- read.csv("sampleComparison.dist.csv", row.names=1, header=TRUE)
-hc <- hclust(as.dist(dataMatrix));
-hcd = as.dendrogram(hc)
+circos.link("a", 0, "b", 0, h = 0.4)
+circos.link("c", c(-0.5, 0.5), "d", c(-0.5,0.5), col = "red",
+border = "blue", h = 0.2)
+circos.link("e", 0, "g", c(-1,1), col = "green", lwd = 2, lty = 2)
 ```
 
-colLab <- function(n) {
-    if (is.leaf(n)) {
-        a <- attributes(n)
-        labCol = c("blue");
-        if(grepl(normalName, a$label)) {
-          labCol = c("red");
-        }
-        attr(n, "nodePar") <- c(a$nodePar, lab.col = labCol)
-    }
-    n
-}
-
-Assign color using dendrapply and the function we created previously
+### get information about your plot
+You can get a summary of your circular layout by circos.info.
 
 ```{.bash}
-clusDendro = dendrapply(hcd, colLab)
+circos.info()
+circos.info(sector.index = "a", track.index = 2)
 ```
-
-Generate PCA on the data
-
-```{.bash}
-data <- read.csv("sampleComparison.freq.csv", header=FALSE,row.names=1, colClasses=c("character", rep("numeric",17)))
-colLanes <- rownames(data)
-colLanes[grep("normal", colLanes, invert=TRUE)] <- "blue"
-colLanes[grep("normal", colLanes)] <- "red"
-pca <- prcomp(data)
-```
-
-Make plot: a pdf file containing the hierchical clustering (dendogram) + Screeplot + PCA (COMP1 vs. COMP2) + PCA (COMP2 vs. COMP3)
-
-```{.bash}
-pdf("sampleComparison.laneMix.pdf")
-par(mar=c(3,3,1,12))
-cols <- c("red","blue")
-plot(clusDendro, main = "Lane distances", horiz=TRUE)
-legend("top", legend = c("Normal","Tumor"), fill = cols, border = cols)
-
-par(mar=c(1,1,1,1))
-screeplot(pca, type="lines")
-plot(pca$x[,1:2])
-text(pca$x[,1:2], rownames(data), col=colLanes)
-plot(pca$x[,2:3])
-text(pca$x[,2:3], rownames(data), col=colLanes)
-dev.off()
-```
-
-Finally exit R
-```{.bash}
-q("yes")
-```
-
-Look at the graphs.
-
-Based on the subset of data we have here a potential library issue could be present.  
-
-
-But when looking at the enitre set of somatic mutations we can this is not true.
-![somatic library clustering](img/somatic_clustering.png)  
-
-
-
-You could do this directly in R but
-1. The basefreq format is not simple to parse
-2. When you have thousands of somatics, and/or hundreds of samples, R struggles to build de pairwise distance and the PCA. This is why we precompute it in java before.
-
-
-# Other visualizations
-
-Many other visualizations of cancer data are possible. we will not go further in this pratical. But here is non-exhaustive list of other interesting visualization of DNA-seq cancer data:  
-
-1. Somatic mutation distribution by type ![somatic mutation](img/somatic_mutations.png)
-2. Genomic context of somatic mutations  ![lego plot](img/somatic_lego_plot.png)
-3. Representation of a possible transcriptional bias for somatic mutation ![transcriptional bias](img/somatic_transciptional_bias.png) 
-
-
 
 ## Aknowledgments
-This tutorial is an adaptation of the one created by Louis letourneau [here](https://github.com/lletourn/Workshops/tree/ebiCancerWorkshop201407doc/01-SNVCalling.md). I would like to thank and acknowledge Louis for this help and for sharing his material. The format of the tutorial has been inspired from Mar Gonzalez Porta. I also want to acknowledge Joel Fillon, Louis Letrouneau (again), Francois Lefebvre, Maxime Caron and Guillaume Bourque for the help in building these pipelines and working with all the various datasets.
+Louis Letourneau
+Toby Hockings
+Guillaume Bourque

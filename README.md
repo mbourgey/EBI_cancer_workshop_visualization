@@ -183,7 +183,7 @@ set.seed(999)
 n = 1000
 a = data.frame(factor = sample(letters[1:8], n, replace = TRUE),
 x = rnorm(n), y = runif(n))
-
+```
 
 ### First initialize the layout 
 

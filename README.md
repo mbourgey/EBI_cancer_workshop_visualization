@@ -1,41 +1,18 @@
-
-# Introduction to DNA-Seq processing for cancer data - Visualization
+# Introduction to cancer genomics data visualization
 ***By Mathieu Bourgey, Ph.D***
 
-# Analysis of cancer data
-This workshop will be a mix of different methods to look and explore your data.
+## Introduction 
+A major goal of cancer genomics analysis is to identify genetic changes which lead to the tumor evolution.
 
-We will be working on the same BAMs you generated from the SNV part.
-Again, for practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
-This leads to some strange results in this part.
+In a more technical view we ends-up with different types of genomics changes
+Point mutations
+Copy number variations
+Structural variants (insertion, inversion, deletion, duplication, translocation)
 
-This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.
-
-### Environment setup
-We will need an updated bvatools for these exercises
-
-```{.bash}
-
-export APP_ROOT=/home/training/Applications/
-export PICARD_JAR=$APP_ROOT/picard-tools/picard.jar
-export SNPEFF_HOME=$APP_ROOT/snpEff/
-export GATK_JAR=$APP_ROOT/gatk/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=$APP_ROOT/bvatools-1.6/bvatools-1.6-full.jar
-export REF=/home/training/ebicancerworkshop201507/reference
-
-```
-
-### Software requirements
-These are all already installed, but here are the original links.
-
-  * [Genome MuSiC](http://gmt.genome.wustl.edu/genome-shipit/genome-music/current/)
-  * [BVATools](https://bitbucket.org/mugqic/bvatools/downloads)
-  * [SAMTools](http://sourceforge.net/projects/samtools/)
-  * [IGV](http://www.broadinstitute.org/software/igv/download)
-  * [Genome Analysis Toolkit](http://www.broadinstitute.org/gatk/)
-  * [Picard](http://picard.sourceforge.net/)
-  * [SnpEff](http://snpeff.sourceforge.net/)
-  * [R]()
+A common visualization of these data is to give an overview of change for the 23 chromosome of the genome in circular view.
+![PNAS_circos](img/circos-cancer-cell.png)
+from PNAS journal
+   
 
 # Circular representation of your calls
 Many tools are available to do this the most common know is circos. But circos is a really not user friendly. In this tutoriel we show you an easy alternative to build circular representation of genomic data.

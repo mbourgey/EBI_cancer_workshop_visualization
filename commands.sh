@@ -1,27 +1,3 @@
-
-export APP_ROOT=/home/training/Applications/
-export PICARD_JAR=$APP_ROOT/picard-tools/picard.jar
-export SNPEFF_HOME=$APP_ROOT/snpEff/
-export GATK_JAR=$APP_ROOT/gatk/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=$APP_ROOT/bvatools-1.6/bvatools-1.6-full.jar
-export REF=/home/training/ebicancerworkshop201507/reference
-
-
-
-cd /home/training/ebicancerworkshop201507/visualization/
-
-
-tree
-
-
-less data/breakdancer.somatic.tsv
-less data/mutec.somatic.vcf
-less data/scones.somatic.30k.tsv
-
-
-R
-
-
 library(circlize)
 
 
@@ -77,120 +53,49 @@ title("Somatic calls (SNV - SV - CNV) of sample LR376")
 legend(0.7,1.4,legend=c("SNV", "CNV-DUPLICATION","CNV-DELETION","SV-DELETION","SV-INSERTION","SV-INVERSION"),col=c("orange","red","blue","blue","black","green","red"),pch=c(16,15,15,16,16,16,16,16),cex=0.75,title="Tracks:",bty='n')
 legend(0.6,0.95,legend="SV-TRANSLOCATION",col="black",lty=1,cex=0.75,lwd=1.2,bty='n')
 
+## A generic circular plot for non-genomic data
 
-q("yes")
-
-
-mkdir -p contamination
-
-
-grep SOMATIC ../SNV/pairedVariants/mutect.vcf \
- | awk 'BEGIN {OFS="\t"} NR > 1 {print $1 , $2 , $4 , $5}' \
- > contamination/mutect.snpPos.tsv
+set.seed(999)
+n = 1000
+a = data.frame(factor = sample(letters[1:8], n, replace = TRUE),
+x = rnorm(n), y = runif(n))
 
 
-for i in normal tumor
-do
-  mkdir -p contamination/${i}
-  java -Xmx2G -jar $BVATOOLS_JAR basefreq \
-    --pos contamination/mutect.snpPos.tsv \
-    --bam ../SNV/alignment/${i}/${i}.sorted.dup.recal.bam \
-    --out contamination/${i}/${i}.somaticSnpPos \
-    --perRG
-done
+circos.clear()
+par(mar = c(1, 1, 1, 1), lwd = 0.1, cex = 0.7)
+circos.par("track.height" = 0.1)
+circos.initialize(factors = a$factor, x = a$x)
 
+circos.trackPlotRegion(factors = a$factor, y = a$y,panel.fun = function(x, y) {
+        circos.axis()
+})
+col = rep(c("#FF0000", "#00FF00"), 4)
+circos.trackPoints(a$factor, a$x, a$y, col = col, pch = 16, cex = 0.5)
+circos.text(-1, 0.5, "left", sector.index = "a", track.index = 1)
+circos.text(1, 0.5, "right", sector.index = "a")
 
-less  contamination/normal/normal.somaticSnpPos.normal_62DPDAAXX_8.alleleFreq.csv
+bgcol = rep(c("#EFEFEF", "#CCCCCC"), 4)
+circos.trackHist(a$factor, a$x, bg.col = bgcol, col = NA)
 
+circos.trackPlotRegion(factors = a$factor, x = a$x, y = a$y,
+panel.fun = function(x, y) {
+grey = c("#FFFFFF", "#CCCCCC", "#999999")
+sector.index = get.cell.meta.data("sector.index")
+xlim = get.cell.meta.data("xlim")
+ylim = get.cell.meta.data("ylim")
+circos.text(mean(xlim), mean(ylim), sector.index)
+circos.points(x[1:10], y[1:10], col = "red", pch = 16, cex = 0.6)
+circos.points(x[11:20], y[11:20], col = "blue", cex = 0.6)
+})
 
-for i in contamination/*/*.somaticSnpPos*_?.alleleFreq.csv
-do
-  NAME=`echo $i | sed 's/.*somaticSnpPos.\(.*\).alleleFreq.csv/\1/g'`
-  echo "--freq $NAME $i";done | tr '\n' ' '
-done
+circos.trackPlotRegion(factors = a$factor, y = a$y)
+circos.trackLines(a$factor[1:100], a$x[1:100], a$y[1:100], type = "h")
 
+circos.link("a", 0, "b", 0, h = 0.4)
+circos.link("c", c(-0.5, 0.5), "d", c(-0.5,0.5), col = "red",
+border = "blue", h = 0.2)
+circos.link("e", 0, "g", c(-1,1), col = "green", lwd = 2, lty = 2)
 
-java -Xmx2G -jar $BVATOOLS_JAR clustfreq \
---snppos contamination/mutect.snpPos.tsv \
---threads 3 \
---prefix sampleComparison \
---outputFreq \
---freq normal_62DPDAAXX_8 contamination/normal/normal.somaticSnpPos.normal_62DPDAAXX_8.alleleFreq.csv \
---freq normal_62DVGAAXX_1 contamination/normal/normal.somaticSnpPos.normal_62DVGAAXX_1.alleleFreq.csv  \
---freq normal_62MK3AAXX_5 contamination/normal/normal.somaticSnpPos.normal_62MK3AAXX_5.alleleFreq.csv \
---freq normal_A81DF6ABXX_1 contamination/normal/normal.somaticSnpPos.normal_A81DF6ABXX_1.alleleFreq.csv \
---freq normal_A81DF6ABXX_2 contamination/normal/normal.somaticSnpPos.normal_A81DF6ABXX_2.alleleFreq.csv \
---freq normal_BC04D4ACXX_2 contamination/normal/normal.somaticSnpPos.normal_BC04D4ACXX_2.alleleFreq.csv  \
---freq normal_BC04D4ACXX_3 contamination/normal/normal.somaticSnpPos.normal_BC04D4ACXX_3.alleleFreq.csv \
---freq normal_BD06UFACXX_4 contamination/normal/normal.somaticSnpPos.normal_BD06UFACXX_4.alleleFreq.csv  \
---freq normal_BD06UFACXX_5 contamination/normal/normal.somaticSnpPos.normal_BD06UFACXX_5.alleleFreq.csv  \
---freq tumor_62DU0AAXX_8 contamination/tumor/tumor.somaticSnpPos.tumor_62DU0AAXX_8.alleleFreq.csv  \
---freq tumor_62DU6AAXX_8 contamination/tumor/tumor.somaticSnpPos.tumor_62DU6AAXX_8.alleleFreq.csv  \
---freq tumor_62DUUAAXX_8 contamination/tumor/tumor.somaticSnpPos.tumor_62DUUAAXX_8.alleleFreq.csv  \
---freq tumor_62DUYAAXX_7 contamination/tumor/tumor.somaticSnpPos.tumor_62DUYAAXX_7.alleleFreq.csv  \
---freq tumor_62DVMAAXX_4 contamination/tumor/tumor.somaticSnpPos.tumor_62DVMAAXX_4.alleleFreq.csv  \
---freq tumor_62DVMAAXX_5 contamination/tumor/tumor.somaticSnpPos.tumor_62DVMAAXX_5.alleleFreq.csv  \
---freq tumor_62DVMAAXX_6 contamination/tumor/tumor.somaticSnpPos.tumor_62DVMAAXX_6.alleleFreq.csv  \
---freq tumor_62DVMAAXX_7 contamination/tumor/tumor.somaticSnpPos.tumor_62DVMAAXX_7.alleleFreq.csv  \
---freq tumor_62DVMAAXX_8 contamination/tumor/tumor.somaticSnpPos.tumor_62DVMAAXX_8.alleleFreq.csv  \
---freq tumor_62JREAAXX_3 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_3.alleleFreq.csv  \
---freq tumor_62JREAAXX_4 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_4.alleleFreq.csv  \
---freq tumor_62JREAAXX_5 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_5.alleleFreq.csv  \
---freq tumor_62JREAAXX_6 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_6.alleleFreq.csv  \
---freq tumor_62JREAAXX_7 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_7.alleleFreq.csv  \
---freq tumor_62JREAAXX_8 contamination/tumor/tumor.somaticSnpPos.tumor_62JREAAXX_8.alleleFreq.csv  \
---freq tumor_AC0756ACXX_4 contamination/tumor/tumor.somaticSnpPos.tumor_AC0756ACXX_4.alleleFreq.csv  \
---freq tumor_AC0756ACXX_5 contamination/tumor/tumor.somaticSnpPos.tumor_AC0756ACXX_5.alleleFreq.csv  \
---freq tumor_AD08C1ACXX_1 contamination/tumor/tumor.somaticSnpPos.tumor_AD08C1ACXX_1.alleleFreq.csv  \
---freq tumor_BD08K8ACXX_1 contamination/tumor/tumor.somaticSnpPos.tumor_BD08K8ACXX_1.alleleFreq.csv
-
-
-R
-
-
-colLab <- function(n) {
-    if (is.leaf(n)) {
-        a <- attributes(n)
-        labCol = c("blue");
-        if(grepl("normal", a$label)) {
-          labCol = c("red");
-        }
-        attr(n, "nodePar") <- c(a$nodePar, lab.col = labCol)
-    }
-    n
-}
-
-
-dataMatrix <- read.csv("sampleComparison.dist.csv", row.names=1, header=TRUE)
-hc <- hclust(as.dist(dataMatrix));
-hcd = as.dendrogram(hc)
-
-
-clusDendro = dendrapply(hcd, colLab)
-
-
-data <- read.csv("sampleComparison.freq.csv", header=FALSE,row.names=1, colClasses=c("character", rep("numeric",17)))
-colLanes <- rownames(data)
-colLanes[grep("normal", colLanes, invert=TRUE)] <- "blue"
-colLanes[grep("normal", colLanes)] <- "red"
-pca <- prcomp(data)
-
-
-pdf("sampleComparison.laneMix.pdf")
-par(mar=c(3,3,1,12))
-cols <- c("red","blue")
-plot(clusDendro, main = "Lane distances", horiz=TRUE)
-legend("top", legend = c("Normal","Tumor"), fill = cols, border = cols)
-
-par(mar=c(1,1,1,1))
-screeplot(pca, type="lines")
-plot(pca$x[,1:2])
-text(pca$x[,1:2], rownames(data), col=colLanes)
-plot(pca$x[,2:3])
-text(pca$x[,2:3], rownames(data), col=colLanes)
-dev.off()
-
-
-q("yes")
-
+circos.info()
+circos.info(sector.index = "a", track.index = 2)
 

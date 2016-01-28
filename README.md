@@ -40,21 +40,23 @@ the generality that types of high-level graphics are not restricted by the softw
 users.
 
 Currently there are following graphic functions that can be used for plotting, they are similar to
-the functions without “circos.” prefix from the traditional graphic engine :
+the functions without circos. prefix from the traditional graphic engine :
 
-• circos.points: add points in a cell, similar as points.
-• circos.lines: add lines in a cell, similar as lines.
-• circos.rect: add rectangle in a cell, similar as rect.
-• circos.polygon: add polygon in a cell, similar as polygon.
-• circos.text: add text in a cell, similar as text.
-• circos.axis: add axis in a cell, functionally similar as axis but with more features.
-• circos.link: this maybe the unique feature for circular layout to represent relationships between
-elements.
+|Function |Defintion|
+|---------|---------|
+|circos.points |add points in a cell, similar as points|
+|circos.lines | add lines in a cell, similar as lines|
+|circos.rect |add rectangle in a cell, similar as rect|
+|circos.polygon |add polygon in a cell, similar as polygon|
+|circos.text | add text in a cell, similar as text|
+|circos.axis | add axis in a cell, functionally similar as axis but with more features|
+|circos.link | this maybe the unique feature for circular layout to represent relationships between elements|
+
 
 For adding points, lines and text in cells through the whole track (among several sectors), the
 following functions are available:
-• circos.trackPoints: this can be replaced by circos.points through a for loop.
-• circos.trackLines: this can be replaced by circos.lines through a for loop.
+ - circos.trackPoints: this can be replaced by circos.points through a for loop.
+ - circos.trackLines: this can be replaced by circos.lines through a for loop.
 
 For Genomics data the author provides a set of predefine functions (circos.genomic...) 
 
@@ -217,7 +219,6 @@ are now in the first track.
 
 
 ```{.bash}
-circos.clear()
 circos.trackPlotRegion(factors = a$factor, y = a$y,panel.fun = function(x, y) {
 	circos.axis()
 })

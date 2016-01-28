@@ -293,11 +293,7 @@ circos.info()
 circos.info(sector.index = "a", track.index = 2)
 ```
 
-## Aknowledgments
-Louis Letourneau
-
-
-
+## Acknowledgments
 
 
 |Guillaume Bourque|Toby Hocking|Louis Letourneau|

@@ -296,7 +296,9 @@ circos.info(sector.index = "a", track.index = 2)
 Louis Letourneau
 
 
-Toby Hockings
 
 
-Guillaume Bourque
+
+|Guillaume Bourque|Toby Hocking|Louis Letourneau|
+|-----------------|------------|----------------|
+|![Guillaume Bourque](img/GBourque.jpg)|![Toby Hocking](img/THocking.jpg)|![Louis Letourneau](img/LLetourneau.jpg)|

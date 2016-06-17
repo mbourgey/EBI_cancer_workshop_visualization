@@ -1,0 +1,1 @@
+Because the somatic signature anlysis will use the context information (the neighbourhood bases) to make sens of the variants. And a mistake in the reference choice will lead to a totaly non-sens results, and possible bugs (out of coordinate variants) 

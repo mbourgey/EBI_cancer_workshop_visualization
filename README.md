@@ -45,12 +45,323 @@ The mathematical framework developed by Alexandrov et al to cluster the somoatic
 R by Gehring et al, called SomaticSignatures package, that is very quick and flexible but currently only accepts point mutations not insertions or deletions (indels). In tests on our data we have found that the Somatic Signatures package in R returns very similar results to the full implementation of Alexandrov’s framework.
 
 ## Data Source
-We will be working on a CageKid sample pair, patient C0098.
-The CageKid project is part of ICGC and is focused on renal cancer in many of it's forms.
-The raw data can be found on EGA and calls, RNA and DNA, can be found on the ICGC portal. 
-For more details about [CageKid](http://www.cng.fr/cagekid/)
+We will be working on a seven cancer sample. Some of them come from the CageKid project which is part of ICGC and is focused on renal cancer in many of it's forms and the other come from colon cancer. 
 
-For practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
+
+For practical reasons we precomputed the mutect somatic mutations vcf of each sample.
+
+## Environment setup
+Everything is already installed on your machine and the analysis will be run using the`R` analysis
+
+```{.bash}
+cd $HOME/ebicancerworkshop201607/vizu
+mkdir -p signatureResults
+
+```
+
+
+
+Let see what the data look like
+
+
+```{.bash}
+tree data/signature/
+```
+
+> data/signature/   
+> ├── S01.mutect.somatic.vcf   
+> ├── S02.mutect.somatic.vcf   
+> ├── S03.mutect.somatic.vcf   
+> ├── S04.mutect.somatic.vcf   
+> ├── S05.mutect.somatic.vcf   
+> ├── S06.mutect.somatic.vcf   
+> └── S07.mutect.somatic.vcf   
+
+
+we could explore one vcf file
+
+```{.bash}
+less data/signature/S01.mutect.somatic.vcf
+
+```
+
+**What can we see from this vcf compared to the one generated in the first practical ?** [solution](solution/_vcf1.md)
+
+
+Now that we now what we are working on, we can start and prepare for the analysis
+
+Just start by typing R onto the command line.
+
+```{.bash}
+R
+
+```
+
+Load all the package libraries needed for this analysis by running the commands.
+
+```{.R}
+library(SomaticSignatures)
+library(BSgenome.Hsapiens.1000genomes.hs37d5)
+library(ggplot2)
+library(Cairo)
+
+```
+## Analysis
+
+
+### loading mutation
+Read in the mutations from the 7 vcf files
+
+```{.R}
+files <- list.files("data/signature",pattern=".vcf$",recursive=T,full.names=TRUE)
+files
+
+```
+
+> [1] "data/signature/S01.mutect.somatic.vcf"   
+> [2] "data/signature/S02.mutect.somatic.vcf"   
+> [3] "data/signature/S03.mutect.somatic.vcf"   
+> [4] "data/signature/S04.mutect.somatic.vcf"   
+> [5] "data/signature/S05.mutect.somatic.vcf"   
+> [6] "data/signature/S06.mutect.somatic.vcf"   
+> [7] "data/signature/S07.mutect.somatic.vcf"   
+
+Next we read in all the genomic positions of variants in the VCF files using the vranges class.
+
+```{.R}
+vranges <- lapply(files, function(v) readVcfAsVRanges(v,"hs37d5"))
+
+```
+
+Don't pay attention to the warnings
+
+Now we can join all the lists of variant positions into one big data set so that it can be processed
+together and look at what is contained in the concatenated vranges data
+
+```{.R}
+vranges.cat <- do.call(c,vranges)
+vranges.cat
+
+```
+The first line of output of the vranges.cat shows us that in total we have put over 4,000 mutations. 
+For each mutation we record between others:
+ - the chromosome position
+ - the mutation base changes 
+ - the depths
+ - the sample of origin 
+ 
+
+We can print out how many mutations we have read in for each of the cancer samples we
+are using by using the command.
+
+```{.R}
+print(table(sampleNames(vranges.cat)))
+
+```
+
+> S01 S02 S03 S04 S05 S06 S07   
+> 921 485 233 846 967 793 539   
+
+
+**Could you predict which sample belongs to kidney or colon cancers ?** [solution](solution/_vcf3.md)
+
+now we can use the reference and the position of the mutation to look up the bases on either side of the mutation i.e. the mutation context.
+
+
+### adding mutation context
+Run the mutationContext function of SomaticSignatures.
+
+```{.R}
+mc <- mutationContext(vranges.cat, BSgenome.Hsapiens.1000genomes.hs37d5)
+
+```
+
+It is always important to select the correct reference for your data.
+
+**why ?** [solution](solution/_vcf2.md)
+
+
+We can inspect what information we had added to the vranges.cat objec
+
+```{.R}
+mc
+
+```
+
+Notice that the mutation and its context have been added to the last two columns
+
+
+There are a total of 96 possible single base mutations and context combinations. We can calculate this by, first, listing out the six possible types of single nucleotide mutations: 
+
+ - C/A the reverse compliment (G/T) is also in this group
+ - C/G includes (G/C)
+ - C/T includes (G/C)
+ - T/A includes (A/T)
+ - T/C includes (A/G)
+ - T/G includes (A/C)
+
+
+Then we can listing every of  mutation type using the neighbouring bases, on either side of a mutation, also referred to as the mutation context. 
+
+There are 16 possible combinations of mutation contexts. Here [.] stands for one of the mutations listed above.
+
+ - A[.]A A[.]C A[.]G A[.]T
+ - C[.]A C[.]C C[.]G C[.]T
+ - G[.]A G[.]C G[.]G G[.]T
+ - T[.]A T[.]C T[.]G T[.]T
+
+Now if we substitute the [.]’s with each of the 6 different mutations you will find there are
+96 possible types of combined mutations and contexts (6 x 16).
+
+**What about a mutation that looks like G[A/C]A, where should this go ?** [solution](solution/_vcf4.md)
+
+ 
+Now we have all the information that is needed for each sample we can make a matrix that contains counts of mutations in each of the 96 possible combinations of mutations and contexts counting up the totals separately for each sample 
+
+```{.R}
+mm <- motifMatrix(mc, group = "sampleNames", normalize=TRUE)
+dim(mm)
+
+```
+
+> [1] 96  7
+
+The output of the command show us that there are 96 rows (these are the context
+values) and 7 columns which are the 7 samples.
+
+## Running the NMF analysis
+
+Using the matrix we have made we can now run the non-negative matrix factorisation (NMF) process that attempts to find the most stable, grouping solutions for all of the combinations of mutations and contexts. It does this by trying to find similar patterns, or profiles, amongst the samples to sort the data into firstly just 2 groups. This is repeated to get replicate values for each attempt and then separating the data by 3 groups, and then 4 and so on.
+
+
+```{.R}
+gof_nmf <- assessNumberSignatures(mm, 2:10, nReplicates = 5)
+
+```
+
+These parameter choices have been made to keep running time short for this practical !
+
+Visualise the results from the NMF processing by making a pdf of the plot
+
+```{.R}
+Cairo(file="signatureResults/plotNumberOfSignatures.pdf", type="pdf", units="in", width=9, height=8, dpi=72)
+plotNumberSignatures(gof_nmf)
+dev.off()
+
+```
+
+Open up the PDF and examine the curve.
+
+
+The top plot shows the decreasing residual sum of squares for each increasing number of signatures and the bottom plot the increasing explained variance as the number of potential signatures increases. 
+
+
+Ideally the best solution will be the lowest number of signatures with a low RSS and a high explained variance
+
+
+Look at the y-axis scale on the bottom panel. The explained variance is already very high and so close to finding the correct solution for the number of signatures even with just 2. The error bars around each point are fairly small considering we have a very small sample set. Deciding how many signatures are present can be tricky but here let’s go for 8 This is where the gradient of both curves have become flat.
+
+Now we can run the NMF again but this time stipulating that you want to group the data into 3 different mutational signatures.
+
+```{.R}
+sigs_nmf = identifySignatures(mm, 8, nmfDecomposition)
+
+```
+
+## Making sens of sample signature
+
+Let's try to cluster samples based on the signture decomposition. 
+
+```{.R}
+library(pheatmap)
+Cairo(file="signatureResults/plot8Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+pheatmap(samples(sigs_nmf),cluster_cols=F, clustering_distance_cols = "correlation")
+dev.off()
+
+```
+Open up the `plot8Signatures.pdf` that will have been made.
+
+**Are the coresponding cluster fiting with what we predict based on the number of mutation ?** 
+
+Now, we can visualise the shape of the profiles for these 8 signatures
+
+```{.R}
+Cairo(file="signatureResults/plot8Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
+plotSignatures(sigs_nmf,normalize=TRUE, percent=FALSE) + ggtitle("Somatic Signatures: NMF - Barchart") + scale_fill_brewer(palette = "Set2")
+dev.off()
+
+```
+
+Open up the `plot8Signatures.pdf` that will have been made.
+
+
+The 96 possible mutation/context combinations are plotted along the x axis arranged in blocks of 6 lots of 16 (see information above). The height of the bars indicates the frequency of those particular mutation and context combinations in each signature.
+
+Now we can plot out the results for the individual samples in our dataset to show what
+proportion of their mutations have been assigned to each of the signatures.
+
+```{.R}
+Cairo(file="signatureResults/PlotSampleContribution8Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+plotSamples(sigs_nmf, normalize=TRUE) + scale_y_continuous(breaks=seq(0, 1, 0.2), expand = c(0,0))+ theme(axis.text.x = element_text(size=6))
+dev.off()
+
+```
+
+Open the resulting `PlotSampleContribution8Signatures.pdf`. This shows the results for the mutation grouping for each sample. The samples are listed on the x-axis and the proportion of all mutations for that sample is shown on the y-axis. The colours of the bars indicate what proportion of the mutations for that sample were grouped into each of the signatures. The colour that makes up most of the bar for each sample is called its ”major signature”.
+
+
+## Interpreting the signature results
+In their paper __Alexandrov et al__ used this analysis to generate profiles from the data for more than 7000 tumour samples sequenced through both exome and whole genome approaches. They were able to group the data to reveal which genomes have been exposed to similar mutational processes contributing to the genome mutations. More information can be found on the signatures page of the COSMIC website.
+
+
+![Alexandrov signatures](img/alexandrov_signatures.png)  
+
+
+**Can you match up, by eye, the profile shapes against a selection of known mutational signatures supplied ?** [solution](solution/_signatures1.md)
+
+
+Unfortunately the SomaticSignatures package does not provide any autmated way to deconstruct the signal based on Alexandrov known signatures. To do this task we will need to use another R package, `deconstructSigs`, which implement that.
+
+```{.R}
+library(deconstructSigs)
+
+```
+
+First we need to reformat the data to  fit the `deconstructSigs` input format
+
+
+```{.R}
+sigs.input=as.data.frame(t(mm))
+colnames(sigs.input)=c("A[C>A]A","A[C>A]C","A[C>A]G","A[C>A]T","C[C>A]A","C[C>A]C","C[C>A]G",
+ "C[C>A]T","G[C>A]A","G[C>A]C","G[C>A]G","G[C>A]T","T[C>A]A","T[C>A]C",
+ "T[C>A]G","T[C>A]T","A[C>G]A","A[C>G]C","A[C>G]G","A[C>G]T","C[C>G]A",
+ "C[C>G]C","C[C>G]G","C[C>G]T","G[C>G]A","G[C>G]C","G[C>G]G","G[C>G]T",
+ "T[C>G]A","T[C>G]C","T[C>G]G","T[C>G]T","A[C>T]A","A[C>T]C","A[C>T]G",
+ "A[C>T]T","C[C>T]A","C[C>T]C","C[C>T]G","C[C>T]T","G[C>T]A","G[C>T]C",
+ "G[C>T]G","G[C>T]T","T[C>T]A","T[C>T]C","T[C>T]G","T[C>T]T","A[T>A]A",
+ "A[T>A]C","A[T>A]G","A[T>A]T","C[T>A]A","C[T>A]C","C[T>A]G","C[T>A]T",
+ "G[T>A]A","G[T>A]C","G[T>A]G","G[T>A]T","T[T>A]A","T[T>A]C","T[T>A]G",
+ "T[T>A]T","A[T>C]A","A[T>C]C","A[T>C]G","A[T>C]T","C[T>C]A","C[T>C]C",
+ "C[T>C]G","C[T>C]T","G[T>C]A","G[T>C]C","G[T>C]G","G[T>C]T","T[T>C]A",
+ "T[T>C]C","T[T>C]G","T[T>C]T","A[T>G]A","A[T>G]C","A[T>G]G","A[T>G]T",
+ "C[T>G]A","C[T>G]C","C[T>G]G","C[T>G]T","G[T>G]A","G[T>G]C","G[T>G]G",
+ "G[T>G]T","T[T>G]A","T[T>G]C","T[T>G]G","T[T>G]T")
+
+```
+
+
+We can now plot for each sample the contribution of known mutations
+`
+``{.R}
+Cairo(file=paste("signatureResults/PlotSample",i,"deconstructAlexandrov_pie.pdf",sep="_"), type="pdf", units="in", width=9, height=6, dpi=72)
+layout(matrix(1:9,nrow=3,byrow=T))
+for (i in rownames(sigs.input)) {
+	output.sigs = whichSignatures(tumor.ref = sigs.input, signatures.ref = signatures.nature2013, sample.id = i)
+	makePie(output.sigs)
+}
+dev.off()
+
+```
 
 ------------------------------
 # Circular representation of somtaic calls
@@ -60,16 +371,16 @@ Many tools are available to do this the most common know is circos. But circos i
 First we nee to go in the folder to do the analysis
 
 ```{.bash}
-cd /home/training/ebicancerworkshop201507/visualization/
+cd /home/training/ebicancerworkshop201507/vizu
 ```
 
 Let see what is in this folder
 
 ```{.bash}
-tree
+tree  data/vizu/
 ```
 
- data/
+ data/vizu
   -- breakdancer.somatic.tsv
   -- mutec.somatic.vcf
   -- scones.somatic.30k.tsv

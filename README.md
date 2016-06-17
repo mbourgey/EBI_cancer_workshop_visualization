@@ -1,18 +1,59 @@
 
-# Introduction to DNA-Seq processing for cancer data - Visualization
+# Introduction to DNA-Seq processing for cancer data - Interpretation and Visualization
 ***By Mathieu Bourgey, Ph.D***
+
+================================
+
+This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.
+
+====================================
 
 ## Key Learning Outcomes
 After completing this practical the trainee should be able to:
-
+ 
+ * Perform mutional signature analysis using R
  * Generate circos like graphics using R
+
 
 ## Resources You'll be Using
 
 ### Tools Used
 
  * [R](https://cran.r-project.org/)
+ * [R package SomaticSignatures](https://bioconductor.org/packages/release/bioc/html/SomaticSignatures.html)
+ * [R package deconstructSigs](https://cran.rstudio.com/web/packages/deconstructSigs/index.html)
  * [R package circlize](https://cran.r-project.org/web/packages/circlize/index.html)
+ 
+-----------------------------
+# Somatic mutational signature analysis 
+
+## Introduction
+The most common genetic model for cancer development is the accumulation of DNA mutations over time, eventually leading to the disruption or dysregulation of enough key genes that lead cells to uncontrolled growth. Cells in our bodies accumulate DNA mutations over time due to normal aging processes, through exposure to carcinogens or through defects in the cell’s ability to repair mistakes. Recently researchers found a method to take all the single nucleotide mutations identified in tumour cells (somatic SNVs) and cluster them together by the type of the mutation and also what the neighbouring bases are. This is commonly referred to as somatic mutational signatures. 
+
+Common mutational processes that are regularly identified in cancer sequencing are:
+ - Age: the aging process. These are high in C/T transitions due to deamination of methyl-cytidine.
+ - Smoking: marks exposure to inhaled carcinogens and has high numbers of C/A transversions.
+ - UV: UV exposure. These are also high in C/T transitions at di-pyrimidine sites.
+ - BRCA: Indicates that the homologous recombination repair pathway is defective.
+ - APOBEC: Thought to be marking dysregulated APOBEC enzyme activity on single stranded DNA produced during the repair processing of other lesions such as double stand breaks.
+ - MMR: Mismatch repair pathway not working properly. These are high in C/T mutations too.
+
+ 
+In cohort cancer analysis it is common to try to generate subtypes to group your data based on a particular molecular phenotype. A reason for doing may include finding sets of patients that have a similar form of the disease and therefore all might benefit from a particular treatment. We can use the somatic mutational signatures analysis to group the data from a cohort of patients to inform which genomes are most similar based on the pattern of exposures or processes that have contributed to their genome changes. 
+
+The mathematical framework developed by Alexandrov et al to cluster the somoatic mutations was implemented in MATLAB. We are going to use a version implemented in
+R by Gehring et al, called SomaticSignatures package, that is very quick and flexible but currently only accepts point mutations not insertions or deletions (indels). In tests on our data we have found that the Somatic Signatures package in R returns very similar results to the full implementation of Alexandrov’s framework.
+
+## Data Source
+We will be working on a CageKid sample pair, patient C0098.
+The CageKid project is part of ICGC and is focused on renal cancer in many of it's forms.
+The raw data can be found on EGA and calls, RNA and DNA, can be found on the ICGC portal. 
+For more details about [CageKid](http://www.cng.fr/cagekid/)
+
+For practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
+
+------------------------------
+# Circular represenation of somtaic calls
  
 ## Introduction
 
@@ -33,7 +74,7 @@ This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unport
 
 We will use a dataset derived from the analysis of whole genome sequencing paired normal/tumour samples
 
-The call files are contained in the folder visualisation:
+The call files are contained in the folder visualization:
 
  * mutect.somatic.vcf
  * delly.somatic.vcf

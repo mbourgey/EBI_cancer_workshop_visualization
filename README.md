@@ -1,43 +1,60 @@
 
-# Introduction to DNA-Seq processing for cancer data - Visualization
+# Introduction to DNA-Seq processing for cancer data - Interpretation and Visualization
 ***By Mathieu Bourgey, Ph.D***
 
-# Analysis of cancer data
-This workshop will be a mix of different methods to look and explore your data.
-
-We will be working on the same BAMs you generated from the SNV part.
-Again, for practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
-This leads to some strange results in this part.
+================================
 
 This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.
 
-### Environment setup
-We will need an updated bvatools for these exercises
+====================================
 
-```{.bash}
+## Key Learning Outcomes
+After completing this practical the trainee should be able to:
+ 
+ * Perform mutional signature analysis using R
+ * Generate circos like graphics using R
 
-export APP_ROOT=/home/training/Applications/
-export PICARD_JAR=$APP_ROOT/picard-tools/picard.jar
-export SNPEFF_HOME=$APP_ROOT/snpEff/
-export GATK_JAR=$APP_ROOT/gatk/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=$APP_ROOT/bvatools-1.6/bvatools-1.6-full.jar
-export REF=/home/training/ebicancerworkshop201507/reference
 
-```
+## Resources You'll be Using
 
-### Software requirements
-These are all already installed, but here are the original links.
+### Tools Used
 
-  * [Genome MuSiC](http://gmt.genome.wustl.edu/genome-shipit/genome-music/current/)
-  * [BVATools](https://bitbucket.org/mugqic/bvatools/downloads)
-  * [SAMTools](http://sourceforge.net/projects/samtools/)
-  * [IGV](http://www.broadinstitute.org/software/igv/download)
-  * [Genome Analysis Toolkit](http://www.broadinstitute.org/gatk/)
-  * [Picard](http://picard.sourceforge.net/)
-  * [SnpEff](http://snpeff.sourceforge.net/)
-  * [R]()
+ * [R](https://cran.r-project.org/)
+ * [R package SomaticSignatures](https://bioconductor.org/packages/release/bioc/html/SomaticSignatures.html)
+ * [R package deconstructSigs](https://cran.rstudio.com/web/packages/deconstructSigs/index.html)
+ * [R package circlize](https://cran.r-project.org/web/packages/circlize/index.html)
+ 
+-----------------------------
+# Somatic mutational signature analysis 
 
-# Circular representation of your calls
+## Introduction
+The most common genetic model for cancer development is the accumulation of DNA mutations over time, eventually leading to the disruption or dysregulation of enough key genes that lead cells to uncontrolled growth. Cells in our bodies accumulate DNA mutations over time due to normal aging processes, through exposure to carcinogens or through defects in the cell’s ability to repair mistakes. Recently researchers found a method to take all the single nucleotide mutations identified in tumour cells (somatic SNVs) and cluster them together by the type of the mutation and also what the neighbouring bases are. This is commonly referred to as somatic mutational signatures. 
+
+Common mutational processes that are regularly identified in cancer sequencing are:
+ - Age: the aging process. These are high in C/T transitions due to deamination of methyl-cytidine.
+ - Smoking: marks exposure to inhaled carcinogens and has high numbers of C/A transversions.
+ - UV: UV exposure. These are also high in C/T transitions at di-pyrimidine sites.
+ - BRCA: Indicates that the homologous recombination repair pathway is defective.
+ - APOBEC: Thought to be marking dysregulated APOBEC enzyme activity on single stranded DNA produced during the repair processing of other lesions such as double stand breaks.
+ - MMR: Mismatch repair pathway not working properly. These are high in C/T mutations too.
+
+ 
+In cohort cancer analysis it is common to try to generate subtypes to group your data based on a particular molecular phenotype. A reason for doing may include finding sets of patients that have a similar form of the disease and therefore all might benefit from a particular treatment. We can use the somatic mutational signatures analysis to group the data from a cohort of patients to inform which genomes are most similar based on the pattern of exposures or processes that have contributed to their genome changes. 
+
+The mathematical framework developed by Alexandrov et al to cluster the somoatic mutations was implemented in MATLAB. We are going to use a version implemented in
+R by Gehring et al, called SomaticSignatures package, that is very quick and flexible but currently only accepts point mutations not insertions or deletions (indels). In tests on our data we have found that the Somatic Signatures package in R returns very similar results to the full implementation of Alexandrov’s framework.
+
+## Data Source
+We will be working on a CageKid sample pair, patient C0098.
+The CageKid project is part of ICGC and is focused on renal cancer in many of it's forms.
+The raw data can be found on EGA and calls, RNA and DNA, can be found on the ICGC portal. 
+For more details about [CageKid](http://www.cng.fr/cagekid/)
+
+For practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
+
+------------------------------
+# Circular representation of somtaic calls
+ 
 Many tools are available to do this the most common know is circos. But circos is a really not user friendly. In this tutoriel we show you an easy alternative to build circular representation of genomic data.
 
 First we nee to go in the folder to do the analysis

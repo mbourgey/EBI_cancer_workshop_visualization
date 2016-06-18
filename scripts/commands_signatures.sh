@@ -67,7 +67,7 @@ colnames(sigs.input)=c("A[C>A]A","A[C>A]C","A[C>A]G","A[C>A]T","C[C>A]A","C[C>A]
  "C[T>G]A","C[T>G]C","C[T>G]G","C[T>G]T","G[T>G]A","G[T>G]C","G[T>G]G",
  "G[T>G]T","T[T>G]A","T[T>G]C","T[T>G]G","T[T>G]T")
 
-Cairo(file=paste("signatureResults/PlotSample",i,"deconstructAlexandrov_pie.pdf",sep="_"), type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="signatureResults/PlotSampleDeconstructAlexandrov_pie.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 layout(matrix(1:9,nrow=3,byrow=T))
 for (i in rownames(sigs.input)) {
 	output.sigs = whichSignatures(tumor.ref = sigs.input, signatures.ref = signatures.nature2013, sample.id = i)

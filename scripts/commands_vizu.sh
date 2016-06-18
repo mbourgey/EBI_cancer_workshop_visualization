@@ -48,7 +48,7 @@ for (i in 1:dim(sv)[1]) {
 }
 svTable=data.frame(paste("chr",sv[,1],sep=""),as.numeric(sv[,2]),as.numeric(posEnd),paste("chr",chrEnd,sep=""),as.character(sv[,5]))
 
-typeE=c("DEL","INS","INV")
+typeE=c("<DEL>","<INS>","<INV>")
 colE=c("blue","black","green")
 for (i in 1:3) {
         bed_list=svTable[svTable[,5]==typeE[i],]

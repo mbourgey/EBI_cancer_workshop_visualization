@@ -534,7 +534,7 @@ Now that we have reformated the SV calls, let's draw them
 
 
 ```{.R}
-typeE=c("DEL","INS","INV")
+typeE=c("<DEL>","<INS>","<INV>")
 colE=c("blue","black","green")
 for (i in 1:3) {
         bed_list=svTable[svTable[,5]==typeE[i],]

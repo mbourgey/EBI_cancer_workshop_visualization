@@ -11,7 +11,7 @@ R
 library(circlize)
 
 snv_tmp=read.table("data/vizu/mutec.somatic.vcf",comment.char="#")
-sv=read.table("data/vizu/somatic.sv.vcf")
+sv=read.table("data/vizu/delly.somatic.vcf")
 cnv=read.table("data/vizu/scones.somatic.tsv",header=T)
 
 par(mar = c(1, 1, 1, 1))

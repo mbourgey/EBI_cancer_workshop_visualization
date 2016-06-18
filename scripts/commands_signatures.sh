@@ -34,7 +34,7 @@ Cairo(file="signatureResults/plotNumberOfSignatures.pdf", type="pdf", units="in"
 plotNumberSignatures(gof_nmf)
 dev.off()
 
-sigs_nmf = identifySignatures(mm, 8, nmfDecomposition)
+sigs_nmf = identifySignatures(mm, 7, nmfDecomposition)
 
 library(pheatmap)
 Cairo(file="signatureResults/plot8Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)

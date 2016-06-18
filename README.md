@@ -267,7 +267,7 @@ Look at the y-axis scale on the bottom panel. The explained variance is already 
 Now we can run the NMF again but this time stipulating that you want to group the data into 3 different mutational signatures.
 
 ```{.R}
-sigs_nmf = identifySignatures(mm, 8, nmfDecomposition)
+sigs_nmf = identifySignatures(mm, 7, nmfDecomposition)
 
 ```
 

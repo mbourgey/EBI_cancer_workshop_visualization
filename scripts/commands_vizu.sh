@@ -10,9 +10,9 @@ R
 
 library(circlize)
 
-snv_tmp=read.table("data/mutec.somatic.vcf",comment.char="#")
-sv=read.table("somatic.sv.vcf")
-cnv=read.table("data/scones.somatic.tsv",header=T)
+snv_tmp=read.table("data/vizu/mutec.somatic.vcf",comment.char="#")
+sv=read.table("data/vizu/somatic.sv.vcf")
+cnv=read.table("data/vizu/scones.somatic.tsv",header=T)
 
 par(mar = c(1, 1, 1, 1))
 circos.par("start.degree" = 90)

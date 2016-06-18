@@ -10,7 +10,7 @@ R
 
 library(circlize)
 
-snv_tmp=read.table("data/vizu/mutect.somatic.vcf",comment.char="#")
+snp=read.table("data/vizu/mutect.somatic.vcf",comment.char="#")
 sv=read.table("data/vizu/delly.somatic.vcf")
 cnv=read.table("data/vizu/scones.somatic.tsv",header=T)
 

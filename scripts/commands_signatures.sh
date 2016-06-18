@@ -28,7 +28,7 @@ mc
 mm <- motifMatrix(mc, group = "sampleNames", normalize=TRUE)
 dim(mm)
 
-gof_nmf <- assessNumberSignatures(mm, 2:10, nReplicates = 5)
+gof_nmf <- assessNumberSignatures(mm, 2:7, nReplicates = 5)
 
 Cairo(file="signatureResults/plotNumberOfSignatures.pdf", type="pdf", units="in", width=9, height=8, dpi=72)
 plotNumberSignatures(gof_nmf)

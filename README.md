@@ -238,7 +238,7 @@ Using the matrix we have made we can now run the non-negative matrix factorisati
 
 
 ```{.R}
-gof_nmf <- assessNumberSignatures(mm, 2:10, nReplicates = 5)
+gof_nmf <- assessNumberSignatures(mm, 2:7, nReplicates = 5)
 
 ```
 

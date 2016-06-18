@@ -37,15 +37,15 @@ dev.off()
 sigs_nmf = identifySignatures(mm, 7, nmfDecomposition)
 
 library(pheatmap)
-Cairo(file="signatureResults/plot8Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="signatureResults/plot7Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 pheatmap(samples(sigs_nmf),cluster_cols=F, clustering_distance_cols = "correlation")
 dev.off()
 
-Cairo(file="signatureResults/plot8Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
+Cairo(file="signatureResults/plot7Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
 plotSignatures(sigs_nmf,normalize=TRUE, percent=FALSE) + ggtitle("Somatic Signatures: NMF - Barchart") + scale_fill_brewer(palette = "Set2")
 dev.off()
 
-Cairo(file="signatureResults/PlotSampleContribution8Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="signatureResults/PlotSampleContribution7Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 plotSamples(sigs_nmf, normalize=TRUE) + scale_y_continuous(breaks=seq(0, 1, 0.2), expand = c(0,0))+ theme(axis.text.x = element_text(size=6))
 dev.off()
 

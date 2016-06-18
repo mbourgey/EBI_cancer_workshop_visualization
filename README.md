@@ -277,25 +277,25 @@ Let's try to cluster samples based on the signture decomposition.
 
 ```{.R}
 library(pheatmap)
-Cairo(file="signatureResults/plot8Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="signatureResults/plot7Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 pheatmap(samples(sigs_nmf),cluster_cols=F, clustering_distance_cols = "correlation")
 dev.off()
 
 ```
-Open up the `plot8Signatures.pdf` that will have been made.
+Open up the `plot7Signatures.pdf` that will have been made.
 
 **Are the coresponding cluster fiting with what we predict based on the number of mutation ?** 
 
 Now, we can visualise the shape of the profiles for these 8 signatures
 
 ```{.R}
-Cairo(file="signatureResults/plot8Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
+Cairo(file="signatureResults/plot7Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
 plotSignatures(sigs_nmf,normalize=TRUE, percent=FALSE) + ggtitle("Somatic Signatures: NMF - Barchart") + scale_fill_brewer(palette = "Set2")
 dev.off()
 
 ```
 
-Open up the `plot8Signatures.pdf` that will have been made.
+Open up the `plot7Signatures.pdf` that will have been made.
 
 
 The 96 possible mutation/context combinations are plotted along the x axis arranged in blocks of 6 lots of 16 (see information above). The height of the bars indicates the frequency of those particular mutation and context combinations in each signature.
@@ -304,13 +304,13 @@ Now we can plot out the results for the individual samples in our dataset to sho
 proportion of their mutations have been assigned to each of the signatures.
 
 ```{.R}
-Cairo(file="signatureResults/PlotSampleContribution8Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="signatureResults/PlotSampleContribution7Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 plotSamples(sigs_nmf, normalize=TRUE) + scale_y_continuous(breaks=seq(0, 1, 0.2), expand = c(0,0))+ theme(axis.text.x = element_text(size=6))
 dev.off()
 
 ```
 
-Open the resulting `PlotSampleContribution8Signatures.pdf`. This shows the results for the mutation grouping for each sample. The samples are listed on the x-axis and the proportion of all mutations for that sample is shown on the y-axis. The colours of the bars indicate what proportion of the mutations for that sample were grouped into each of the signatures. The colour that makes up most of the bar for each sample is called its ”major signature”.
+Open the resulting `PlotSampleContribution7Signatures.pdf`. This shows the results for the mutation grouping for each sample. The samples are listed on the x-axis and the proportion of all mutations for that sample is shown on the y-axis. The colours of the bars indicate what proportion of the mutations for that sample were grouped into each of the signatures. The colour that makes up most of the bar for each sample is called its ”major signature”.
 
 
 ## Interpreting the signature results

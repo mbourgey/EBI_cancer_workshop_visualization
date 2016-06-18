@@ -404,8 +404,8 @@ tree  data/vizu/
 ```
 
  data/vizu
-  -- breakdancer.somatic.tsv
-  -- mutec.somatic.vcf
+  -- delly.somatic.vcf
+  -- mutect.somatic.vcf
   -- scones.somatic.tsv
  src/
   -- commands.sh
@@ -414,7 +414,7 @@ Take a look of the data files.
 
 ```{.bash}
 less data/vizu/delly.somatic.vcf
-less data/vizu/mutec.somatic.vcf
+less data/vizu/mutect.somatic.vcf
 less data/vizu/scones.somatic.tsv
 
 ```
@@ -451,7 +451,7 @@ Let's import the variants
 
 
 ```{.R}
-snv_tmp=read.table("data/vizu/mutec.somatic.vcf",comment.char="#")
+snv_tmp=read.table("data/vizu/mutect.somatic.vcf",comment.char="#")
 sv=read.table("data/vizu/delly.somatic.vcf")
 cnv=read.table("data/vizu/scones.somatic.tsv",header=T)
 

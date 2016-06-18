@@ -3,14 +3,14 @@ cd /home/training/ebicancerworkshop201507/vizu
 tree  data/vizu/
 
 less data/vizu/delly.somatic.vcf
-less data/vizu/mutec.somatic.vcf
+less data/vizu/mutect.somatic.vcf
 less data/vizu/scones.somatic.tsv
 
 R
 
 library(circlize)
 
-snv_tmp=read.table("data/vizu/mutec.somatic.vcf",comment.char="#")
+snv_tmp=read.table("data/vizu/mutect.somatic.vcf",comment.char="#")
 sv=read.table("data/vizu/delly.somatic.vcf")
 cnv=read.table("data/vizu/scones.somatic.tsv",header=T)
 

@@ -379,6 +379,9 @@ Finally exit R
 q("yes")
 ```
 
+Open the resulting `PlotSampleDeconstructAlexandrov_pie.pdf`. This shows the results of the mutation signature deconstruct based on Alxendrov known signatures.
+
+**Can you interpret the signature pattern ?** [solution](solutions/_signature2.md)
 
 ------------------------------
 # Circular representation of somtaic calls

@@ -364,7 +364,7 @@ colnames(sigs.input)=c("A[C>A]A","A[C>A]C","A[C>A]G","A[C>A]T","C[C>A]A","C[C>A]
 We can now plot for each sample the contribution of known mutations
 ```{.R}
 Cairo(file="results/PlotSampleDeconstructAlexandrov_pie.pdf", type="pdf", units="in", width=7, height=9, dpi=72)
-layout(matrix(1:8,nrow=2,byrow=T))
+layout(matrix(1:8,ncol=2,byrow=T))
 for (i in rownames(sigs.input)) {
 	output.sigs = whichSignatures(tumor.ref = sigs.input, signatures.ref = signatures.nature2013, sample.id = i)
 	makePie(output.sigs)

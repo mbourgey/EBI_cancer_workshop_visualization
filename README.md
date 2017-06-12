@@ -71,7 +71,7 @@ Let see what the data look like
 tree vcf/
 ```
 
-> data/signature/   
+> vcf/   
 > ├── S01.mutect.somatic.vcf   
 > ├── S02.mutect.somatic.vcf   
 > ├── S03.mutect.somatic.vcf   
@@ -88,7 +88,7 @@ less vcf/S01.mutect.somatic.vcf
 
 ```
 
-**What can we see from this vcf compared to the one generated in the first practical ?** [solution](solution/_vcf1.md)
+**What can we see from this vcf compared to the one generated in the first practical ?** [solution](solutions/_vcf1.md)
 
 
 Now that we now what we are working on, we can start and prepare for the analysis
@@ -116,18 +116,18 @@ library(Cairo)
 Read in the mutations from the 7 vcf files
 
 ```{.R}
-files <- list.files("data/signature",pattern=".vcf$",recursive=T,full.names=TRUE)
+files <- list.files("vcf",pattern=".vcf$",recursive=T,full.names=TRUE)
 files
 
 ```
 
-> [1] "data/signature/S01.mutect.somatic.vcf"   
-> [2] "data/signature/S02.mutect.somatic.vcf"   
-> [3] "data/signature/S03.mutect.somatic.vcf"   
-> [4] "data/signature/S04.mutect.somatic.vcf"   
-> [5] "data/signature/S05.mutect.somatic.vcf"   
-> [6] "data/signature/S06.mutect.somatic.vcf"   
-> [7] "data/signature/S07.mutect.somatic.vcf"   
+> [1] "vcf/S01.mutect.somatic.vcf"   
+> [2] "vcf/S02.mutect.somatic.vcf"   
+> [3] "vcf/S03.mutect.somatic.vcf"   
+> [4] "vcf/S04.mutect.somatic.vcf"   
+> [5] "vcf/S05.mutect.somatic.vcf"   
+> [6] "vcf/S06.mutect.somatic.vcf"   
+> [7] "vcf/S07.mutect.somatic.vcf"   
 
 Next we read in all the genomic positions of variants in the VCF files using the vranges class.
 
@@ -166,7 +166,7 @@ print(table(sampleNames(vranges.cat)))
 > 921 485 233 846 967 793 539   
 
 
-**Could you predict which sample belongs to kidney or colon cancers ?** [solution](solution/_vcf3.md)
+**Could you predict which sample belongs to kidney or colon cancers ?** [solution](solutions/_vcf3.md)
 
 now we can use the reference and the position of the mutation to look up the bases on either side of the mutation i.e. the mutation context.
 
@@ -181,7 +181,7 @@ mc <- mutationContext(vranges.cat, BSgenome.Hsapiens.1000genomes.hs37d5)
 
 It is always important to select the correct reference for your data.
 
-**why ?** [solution](solution/_vcf2.md)
+**why ?** [solution](solutions/_vcf2.md)
 
 
 We can inspect what information we had added to the vranges.cat objec
@@ -216,7 +216,7 @@ There are 16 possible combinations of mutation contexts. Here [.] stands for one
 Now if we substitute the [.]’s with each of the 6 different mutations you will find there are
 96 possible types of combined mutations and contexts (6 x 16).
 
-**What about a mutation that looks like G[A/C]A, where should this go ?** [solution](solution/_vcf4.md)
+**What about a mutation that looks like G[A/C]A, where should this go ?** [solution](solutions/_vcf4.md)
 
  
 Now we have all the information that is needed for each sample we can make a matrix that contains counts of mutations in each of the 96 possible combinations of mutations and contexts counting up the totals separately for each sample 
@@ -320,7 +320,7 @@ In their paper __Alexandrov et al__ used this analysis to generate profiles from
 ![Alexandrov signatures](img/alexandrov_signatures.png)  
 
 
-**Can you match up, by eye, the profile shapes against a selection of known mutational signatures supplied ?** [solution](solution/_signatures1.md)
+**Can you match up, by eye, the profile shapes against a selection of known mutational signatures supplied ?** [solution](solutions/_signatures1.md)
 
 
 Unfortunately the SomaticSignatures package does not provide any autmated way to deconstruct the signal based on Alexandrov known signatures. To do this task we will need to use another R package, `deconstructSigs`, which implement that.
@@ -421,13 +421,13 @@ less data/vizu/scones.somatic.tsv
 
 
 **What can you see from this data ?**
-[solution](solution/_data1.md)
+[solution](solutions/_data1.md)
 
 **Why don't we use the vcf format for all type of call?**
-[solution](solution/_data2.md)
+[solution](solutions/_data2.md)
 
 **Did you notice something different from the SNV pratical ?**
-[solution](solution/_data3.md)
+[solution](solutions/_data3.md)
 
 
 The analysis will be done using the R program
@@ -569,7 +569,7 @@ Exercice:
 
 
 **Generate the graph and save it into a pdf file** 
-[solution](solution/_image1.md)
+[solution](solutions/_image1.md)
 
 
 Finally exit R

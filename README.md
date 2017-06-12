@@ -247,7 +247,7 @@ These parameter choices have been made to keep running time short for this pract
 Visualise the results from the NMF processing by making a pdf of the plot
 
 ```{.R}
-Cairo(file="resultsplotNumberOfSignatures.pdf", type="pdf", units="in", width=9, height=8, dpi=72)
+Cairo(file="results/plotNumberOfSignatures.pdf", type="pdf", units="in", width=9, height=8, dpi=72)
 plotNumberSignatures(gof_nmf)
 dev.off()
 
@@ -277,7 +277,7 @@ Let's try to cluster samples based on the signture decomposition.
 
 ```{.R}
 library(pheatmap)
-Cairo(file="resultsplot3Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="results/plot3Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 pheatmap(samples(sigs_nmf),cluster_cols=F, clustering_distance_cols = "correlation")
 dev.off()
 
@@ -289,7 +289,7 @@ Open up the `plot3Signatures.pdf` that will have been made.
 Now, we can visualise the shape of the profiles for these 3 signatures
 
 ```{.R}
-Cairo(file="resultsplot3Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
+Cairo(file="results/plot3Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
 plotSignatures(sigs_nmf,normalize=TRUE, percent=FALSE) + ggtitle("Somatic Signatures: NMF - Barchart") + scale_fill_brewer(palette = "Set2")
 dev.off()
 
@@ -304,7 +304,7 @@ Now we can plot out the results for the individual samples in our dataset to sho
 proportion of their mutations have been assigned to each of the signatures.
 
 ```{.R}
-Cairo(file="resultsPlotSampleContribution3Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="results/PlotSampleContribution3Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 plotSamples(sigs_nmf, normalize=TRUE) + scale_y_continuous(breaks=seq(0, 1, 0.2), expand = c(0,0))+ theme(axis.text.x = element_text(size=6))
 dev.off()
 
@@ -355,7 +355,7 @@ colnames(sigs.input)=c("A[C>A]A","A[C>A]C","A[C>A]G","A[C>A]T","C[C>A]A","C[C>A]
 
 We can now plot for each sample the contribution of known mutations
 ```{.R}
-Cairo(file="resultsPlotSampleDeconstructAlexandrov_pie.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="results/PlotSampleDeconstructAlexandrov_pie.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 layout(matrix(1:9,nrow=3,byrow=T))
 for (i in rownames(sigs.input)) {
 	output.sigs = whichSignatures(tumor.ref = sigs.input, signatures.ref = signatures.nature2013, sample.id = i)

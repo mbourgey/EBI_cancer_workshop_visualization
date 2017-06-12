@@ -299,8 +299,10 @@ dev.off()
 Open the resulting `PlotSampleContribution4Signatures.pdf`. This shows the results for the mutation grouping for each sample. The samples are listed on the x-axis and the proportion of all mutations for that sample is shown on the y-axis. The colours of the bars indicate what proportion of the mutations for that sample were grouped into each of the signatures. The colour that makes up most of the bar for each sample is called its ”major signature”.
 
 
+**Is the contribution plot make sens ?** [solution](solutions/_vcf6.md)
 
-Now, we can visualise the shape of the profiles for these 3 signatures
+
+Now, we can visualise the shape of the profiles for these 4 signatures
 
 ```{.R}
 Cairo(file="results/plot4Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)

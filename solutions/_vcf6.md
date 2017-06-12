@@ -1,4 +1,4 @@
-![Clustering](../img/4signatures_contribution.png)
+![Contribution](../img/4signatures_contribution.png)
 
 We could see the 3 samples clustering toogether (S01, S05, S06) sharing the same 'major signature' as we observed in the heatmap.
 

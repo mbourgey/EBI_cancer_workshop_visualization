@@ -422,9 +422,9 @@ ls
 Take a look of the data files.
 
 ```{.bash}
-less data/vizu/delly.somatic.vcf
-less data/vizu/mutect.somatic.vcf
-less data/vizu/scones.somatic.tsv
+less delly.somatic.vcf
+less mutect.somatic.vcf
+less scones.somatic.tsv
 
 ```
 
@@ -460,9 +460,9 @@ Let's import the variants
 
 
 ```{.R}
-snp=read.table("data/vizu/mutect.somatic.vcf",comment.char="#")
-sv=read.table("data/vizu/delly.somatic.vcf")
-cnv=read.table("data/vizu/scones.somatic.tsv",header=T)
+snp=read.table("mutect.somatic.vcf",comment.char="#")
+sv=read.table("delly.somatic.vcf")
+cnv=read.table("scones.somatic.tsv",header=T)
 
 ```
 

@@ -414,9 +414,9 @@ ls
 
 ```
 
->  delly.somatic.vcf  # Call from Delly (SV)
->  mutect.somatic.vcf # Call from Mutect (SNV)
->  scones.somatic.tsv # Call from SCoNEs (CNV)
+>  delly.somatic.vcf  # Call from Delly (SV)   
+>  mutect.somatic.vcf # Call from Mutect (SNV)   
+>  scones.somatic.tsv # Call from SCoNEs (CNV)   
 >  circos.R           # commands
 
 Take a look of the data files.

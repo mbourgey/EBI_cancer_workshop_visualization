@@ -325,7 +325,7 @@ In their paper __Alexandrov et al__ used this analysis to generate profiles from
 ![Alexandrov signatures](img/alexandrov_signatures.png)  
 
 
-**Can you match up, by eye, the profile shapes against a selection of known mutational signatures supplied ?** [solution](solutions/_signatures1.md)
+**Can you match up, by eye, the profile shapes against a selection of known mutational signatures supplied ?** [solution](solutions/_signature1.md)
 
 
 Unfortunately the SomaticSignatures package does not provide any autmated way to deconstruct the signal based on Alexandrov known signatures. To do this task we will need to use another R package, `deconstructSigs`, which implement that.

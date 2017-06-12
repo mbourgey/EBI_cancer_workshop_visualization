@@ -57,8 +57,8 @@ For practical reasons we precomputed the mutect somatic mutations vcf of each sa
 Everything is already installed on your machine and the analysis will be run using the`R` analysis
 
 ```{.bash}
-cd $HOME/ebicancerworkshop201607/vizu
-mkdir -p signatureResults
+cd $HOME/ebicancerworkshop2017/Visualization/Signature
+mkdir -p results
 
 ```
 
@@ -68,7 +68,7 @@ Let see what the data look like
 
 
 ```{.bash}
-tree data/signature/
+tree vcf/
 ```
 
 > data/signature/   
@@ -84,7 +84,7 @@ tree data/signature/
 we could explore one vcf file
 
 ```{.bash}
-less data/signature/S01.mutect.somatic.vcf
+less vcf/S01.mutect.somatic.vcf
 
 ```
 

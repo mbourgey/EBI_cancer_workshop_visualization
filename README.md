@@ -403,23 +403,21 @@ We will use a dataset derived from the analysis of whole genome sequencing paire
 First we nee to go in the folder to do the analysis
 
 ```{.bash}
-cd /home/training/ebicancerworkshop201507/vizu
+cd /home/training/ebicancerworkshop207/Visualization/Circos
 
 ```
 
 Let see what is in this folder
 
 ```{.bash}
-tree  data/vizu/
+ls 
 
 ```
 
- data/vizu
-  -- delly.somatic.vcf
-  -- mutect.somatic.vcf
-  -- scones.somatic.tsv
- src/
-  -- commands.sh
+>  delly.somatic.vcf  # Call from Delly (SV)
+>  mutect.somatic.vcf # Call from Mutect (SNV)
+>  scones.somatic.tsv # Call from SCoNEs (CNV)
+>  circos.R           # commands
 
 Take a look of the data files.
 

@@ -403,7 +403,7 @@ We will use a dataset derived from the analysis of whole genome sequencing paire
 First we nee to go in the folder to do the analysis
 
 ```{.bash}
-cd /home/training/ebicancerworkshop207/Visualization/Circos
+cd /home/training/ebicancerworkshop2017/Visualization/Circos
 
 ```
 

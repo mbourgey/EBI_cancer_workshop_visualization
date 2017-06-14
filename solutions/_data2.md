@@ -6,4 +6,6 @@ Why ?
 
 Due to the nature of these calls, you can not easily integrate the postional information of the two breakpoints (that could be located faraway or in an other chormosome) using a single position format. 
 
+Now more and more tools for SV use the [bedpe format](http://bedtools.readthedocs.io/en/latest/content/general-usage.html) 
+
 

@@ -414,9 +414,9 @@ ls
 
 ```
 
->  delly.somatic.vcf  # Call from Delly (SV)   
->  mutect.somatic.vcf # Call from Mutect (SNV)   
->  scones.somatic.tsv # Call from SCoNEs (CNV)   
+>  delly.somatic.vcf    
+>  mutect.somatic.vcf   
+>  scones.somatic.tsv   
 >  circos.R           # commands
 
 Take a look of the data files.
@@ -435,8 +435,6 @@ less scones.somatic.tsv
 **Why don't we use the vcf format for all type of call?**
 [solution](solutions/_data2.md)
 
-**Did you notice something different from the SNV pratical ?**
-[solution](solutions/_data3.md)
 
 
 The analysis will be done using the R program
@@ -485,7 +483,7 @@ circos.initializeWithIdeogram(species = "hg19")
 
 ```
 
-Unfortunately circlize does not support b37/hg38 yet. So we will need to reformat our data to fit the hg19 standards
+Unfortunately circlize does not support b37 as it it based on UCSC. So we will need to reformat our data to fit the hg19 standards
 As we work only on autosomes we won't need to lift-over and we could simply add **chr** at the begin of the chromosome names
 
 

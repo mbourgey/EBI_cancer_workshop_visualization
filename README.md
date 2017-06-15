@@ -168,7 +168,7 @@ print(table(sampleNames(vranges.cat)))
 > 921 485 233 846 967 793 539   
 
 
-**Could you predict which sample belongs to kidney or colon cancers ?** [solution](solutions/_vcf3.md)
+**Could you predict which sample belongs to kidney or renal cancers ?** [solution](solutions/_vcf3.md)
 
 now we can use the reference and the position of the mutation to look up the bases on either side of the mutation i.e. the mutation context.
 

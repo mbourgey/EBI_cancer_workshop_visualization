@@ -12,7 +12,7 @@ This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unpor
 After completing this practical the trainee should be able to:
  
  * Perform mutional signature analysis using R
- * Generate circos like graphics using R
+ * Generate circos-like graphics using R
 
 
 ## Resources You'll be Using
@@ -31,7 +31,7 @@ After completing this practical the trainee should be able to:
 # Somatic mutational signature analysis 
 
 ## Introduction
-The most common genetic model for cancer development is the accumulation of DNA mutations over time, eventually leading to the disruption or dysregulation of enough key genes that lead cells to uncontrolled growth. Cells in our bodies accumulate DNA mutations over time due to normal aging processes, through exposure to carcinogens or through defects in the cell’s ability to repair mistakes. Recently researchers found a method to take all the single nucleotide mutations identified in tumour cells (somatic SNVs) and cluster them together by the type of the mutation and also what the neighbouring bases are. This is commonly referred to as somatic mutational signatures. 
+The most common genetic model for cancer development is the accumulation of DNA mutations over time, eventually leading to the disruption or dysregulation of enough key genes that lead cells to uncontrolled growth. Cells in our bodies accumulate DNA mutations over time due to normal aging processes, through exposure to carcinogens or through defects in the cell’s ability to repair mistakes.  
 
 Common mutational processes that are regularly identified in cancer sequencing are:
  - Age: the aging process. These are high in C/T transitions due to deamination of methyl-cytidine.
@@ -41,14 +41,16 @@ Common mutational processes that are regularly identified in cancer sequencing a
  - APOBEC: Thought to be marking dysregulated APOBEC enzyme activity on single stranded DNA produced during the repair processing of other lesions such as double stand breaks.
  - MMR: Mismatch repair pathway not working properly. These are high in C/T mutations too.
 
- 
-In cohort cancer analysis it is common to try to generate subtypes to group your data based on a particular molecular phenotype. A reason for doing may include finding sets of patients that have a similar form of the disease and therefore all might benefit from a particular treatment. We can use the somatic mutational signatures analysis to group the data from a cohort of patients to inform which genomes are most similar based on the pattern of exposures or processes that have contributed to their genome changes. 
+
+Few years ago, researchers (Alexandrov et al) found a method to take all the single nucleotide mutations identified in tumour cells (somatic SNPs) and cluster them together by the type of the mutation and also what the neighbouring bases are. This is commonly referred to as somatic mutational signatures. In cohort cancer analysis it is common to try to generate subtypes to group your data based on a particular molecular phenotype. A reason for doing may include finding sets of patients that have a similar form of the disease and therefore all might benefit from a particular treatment. We can use the somatic mutational signatures analysis to group the data from a cohort of patients to inform which genomes are most similar based on the pattern of exposures or processes that have contributed to their genome changes. 
+
 
 The mathematical framework developed by Alexandrov et al to cluster the somoatic mutations was implemented in MATLAB. We are going to use a version implemented in
-R by Gehring et al, called SomaticSignatures package, that is very quick and flexible but currently only accepts point mutations not insertions or deletions (indels). In tests on our data we have found that the Somatic Signatures package in R returns very similar results to the full implementation of Alexandrov’s framework.
+R by Gehring et al, called SomaticSignatures package, that is very quick and flexible but currently only accepts point mutations not insertions or deletions (indels). In tests on our data we have found that the Somatic Signatures package in R returns very similar results to the full implementation of Alexandrov’s framework. We will also use the method developped by Rosenthal et al. in the deconstructSigs package in order to match the somatic mutational signature signal with thoses described by Alexandrov et al.
+
 
 ## Data Source
-We will be working on a seven cancer sample. Some of them come from the CageKid project which is part of ICGC and is focused on renal cancer in many of it's forms and the other come from colon cancer. 
+We will be working on a seven cancer sample. Some of them come from the CageKid project which is part of ICGC and is focused on kidney cancer in many of it's forms and the other come from renal cancer. 
 
 
 For practical reasons we precomputed the mutect somatic mutations vcf of each sample.

@@ -485,8 +485,8 @@ circos.initializeWithIdeogram(species = "hg19")
 
 ```
 
-Unfortunately circlize does not support b37 as it it based on UCSC. So we will need to reformat our data to fit the hg19 standards
-As we work only on autosomes we won't need to lift-over and we could simply add **chr** at the begin of the chromosome names
+Unfortunately circlize does not support b37 as it it based on UCSC. So we will need to reformat our data to fit the hg19 standards.
+As we work only with autosomes we won't need to lift-over and we could simply add **chr** at the begin of the chromosome names
 
 
 

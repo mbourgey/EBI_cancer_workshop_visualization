@@ -193,7 +193,7 @@ mc
 
 ```
 
-Notice that the mutation and its context have been added to the last two columns
+Note that the mutation and its context have been added to the last two columns
 
 
 There are a total of 96 possible single base mutations and context combinations. We can calculate this by, first, listing out the six possible types of single nucleotide mutations: 

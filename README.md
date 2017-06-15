@@ -156,8 +156,8 @@ For each mutation we record between others:
  - the sample of origin 
  
 
-We can print out how many mutations we have read in for each of the cancer samples we
-are using by using the command.
+We can print out how many mutations we have in each of the cancer samples.
+
 
 ```{.R}
 print(table(sampleNames(vranges.cat)))

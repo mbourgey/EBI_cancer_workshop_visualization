@@ -90,7 +90,7 @@ less vcf/S01.mutect.somatic.vcf
 
 ```
 
-**What can we see from this vcf compared to the one generated in the first practical ?** [solution](solutions/_vcf1.md)
+**What can we see from this vcf ?** [solution](solutions/_vcf1.md)
 
 
 Now that we now what we are working on, we can start and prepare for the analysis

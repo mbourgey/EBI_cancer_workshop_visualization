@@ -1,4 +1,4 @@
-In this vcf only somatic variants are present (PASS) and indels have been removed.
+In this vcf, only high qulaity somatic variants are present (PASS) and indels have been removed.
 
 The mutations used in this analysis need to be high quality somatic mutations:
  - Remember the goal is to find the key mutational processes that these tumours have been exposed to, so you need to exclude germline mutations (mutations that the person was born with that can be seen in the sequencing of matched normal samples).

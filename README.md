@@ -50,7 +50,7 @@ R by Gehring et al, called SomaticSignatures package, that is very quick and fle
 
 
 ## Data Source
-We will be working on a seven cancer sample. Some of them come from the CageKid project which is part of ICGC and is focused on kidney cancer in many of it's forms and the other come from renal cancer. 
+We will be working on a seven cancer sample. Some of them come from the CageKid project which is part of ICGC and is focused on kidney cancer in many of it's forms and the other come from a renal cancer project. 
 
 
 For practical reasons we precomputed the mutect somatic mutations vcf of each sample.

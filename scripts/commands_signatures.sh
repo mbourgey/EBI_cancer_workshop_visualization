@@ -1,8 +1,8 @@
-cd $HOME/ebicancerworkshop201607/vizu
-mkdir -p signatureResults
+cd $HOME/ebicancerworkshop2018/vizu/signature
+mkdir -p results
 
-tree data/signature/
-less data/signature/S01.mutect.somatic.vcf
+tree vcf/
+less vcf/S01.mutect.somatic.vcf
 
 R
 
@@ -11,7 +11,7 @@ library(BSgenome.Hsapiens.1000genomes.hs37d5)
 library(ggplot2)
 library(Cairo)
 
-files <- list.files("data/signature",pattern=".vcf$",recursive=T,full.names=TRUE)
+files <- list.files("vcf/",pattern=".vcf$",recursive=T,full.names=TRUE)
 files
 
 vranges <- lapply(files, function(v) readVcfAsVRanges(v,"hs37d5"))
@@ -30,22 +30,22 @@ dim(mm)
 
 gof_nmf <- assessNumberSignatures(mm, 2:7, nReplicates = 5)
 
-Cairo(file="signatureResults/plotNumberOfSignatures.pdf", type="pdf", units="in", width=9, height=8, dpi=72)
+Cairo(file="results/plotNumberOfSignatures.pdf", type="pdf", units="in", width=9, height=8, dpi=72)
 plotNumberSignatures(gof_nmf)
 dev.off()
 
 sigs_nmf = identifySignatures(mm, 3, nmfDecomposition)
 
 library(pheatmap)
-Cairo(file="signatureResults/plot3Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="results/plot3Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 pheatmap(samples(sigs_nmf),cluster_cols=F, clustering_distance_cols = "correlation")
 dev.off()
 
-Cairo(file="signatureResults/plot3Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
+Cairo(file="results/plot3Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
 plotSignatures(sigs_nmf,normalize=TRUE, percent=FALSE) + ggtitle("Somatic Signatures: NMF - Barchart") + scale_fill_brewer(palette = "Set2")
 dev.off()
 
-Cairo(file="signatureResults/PlotSampleContribution3Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="results/PlotSampleContribution3Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 plotSamples(sigs_nmf, normalize=TRUE) + scale_y_continuous(breaks=seq(0, 1, 0.2), expand = c(0,0))+ theme(axis.text.x = element_text(size=6))
 dev.off()
 
@@ -67,7 +67,7 @@ colnames(sigs.input)=c("A[C>A]A","A[C>A]C","A[C>A]G","A[C>A]T","C[C>A]A","C[C>A]
  "C[T>G]A","C[T>G]C","C[T>G]G","C[T>G]T","G[T>G]A","G[T>G]C","G[T>G]G",
  "G[T>G]T","T[T>G]A","T[T>G]C","T[T>G]G","T[T>G]T")
 
-Cairo(file="signatureResults/PlotSampleDeconstructAlexandrov_pie.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="results/PlotSampleDeconstructAlexandrov_pie.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 layout(matrix(1:9,nrow=3,byrow=T))
 for (i in rownames(sigs.input)) {
 	output.sigs = whichSignatures(tumor.ref = sigs.input, signatures.ref = signatures.nature2013, sample.id = i)

@@ -1,4 +1,4 @@
-cd /home/training/ebicancerworkshop201507/vizu
+cd /home/training/ebicancerworkshop2018/vizu
 
 tree  data/vizu/
 

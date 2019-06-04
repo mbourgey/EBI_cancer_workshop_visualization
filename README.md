@@ -59,7 +59,7 @@ For practical reasons we precomputed the mutect somatic mutations vcf of each sa
 Everything is already installed on your machine and the analysis will be run using the`R` analysis
 
 ```{.bash}
-cd $HOME/ebicancerworkshop2018/vizu/signature
+cd $HOME/ebicancerworkshop2019/vizu/signature
 mkdir -p results
 
 ```
@@ -405,7 +405,7 @@ We will use a dataset derived from the analysis of whole genome sequencing paire
 First we nee to go in the folder to do the analysis
 
 ```{.bash}
-cd /home/training/ebicancerworkshop2018/vizu
+cd /home/training/ebicancerworkshop2018/vizu/circos/
 
 ```
 

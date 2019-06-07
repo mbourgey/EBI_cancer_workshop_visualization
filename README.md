@@ -136,7 +136,7 @@ files
 > [4] "vcf/S04.mutect.somatic.vcf"   
 > [5] "vcf/S05.mutect.somatic.vcf"   
 > [6] "vcf/S06.mutect.somatic.vcf"   
-> [7] "vcf/S07.mutect.somatic.vcf"   
+
 
 Next we read in all the genomic positions of variants in the VCF files using the vranges class.
 

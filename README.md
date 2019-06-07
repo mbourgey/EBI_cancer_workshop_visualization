@@ -50,7 +50,7 @@ R by Gehring et al, called SomaticSignatures package, that is very quick and fle
 
 
 ## Data Source
-We will be working on a seven cancer sample. Some of them come from the CageKid project which is part of ICGC and is focused on kidney cancer in many of it's forms and the other come from a renal cancer project. 
+We will be working on a six cancer samples. Some of them come from the CageKid project which is part of ICGC and is focused on kidney cancer in many of it's forms and the others come from a renal cancer project. 
 
 
 For practical reasons we precomputed the mutect somatic mutations vcf of each sample.
@@ -60,6 +60,14 @@ Everything is already installed on your machine and the analysis will be run usi
 
 ```{.bash}
 cd $HOME/ebicancerworkshop2019/vizu/signature
+
+## set environement
+
+#launch docker
+docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME --user $UID:$GROUPS -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd  c3genomics/genpipes:0.8
+
+module load mugqic/R_Bioconductor/3.6.0_3.9
+
 mkdir -p results
 
 ```
@@ -70,7 +78,7 @@ Let see what the data look like
 
 
 ```{.bash}
-tree vcf/
+ls vcf/
 ```
 
 > vcf/   
@@ -80,7 +88,6 @@ tree vcf/
 > ├── S04.mutect.somatic.vcf   
 > ├── S05.mutect.somatic.vcf   
 > ├── S06.mutect.somatic.vcf   
-> └── S07.mutect.somatic.vcf   
 
 
 we could explore one vcf file
@@ -164,8 +171,8 @@ print(table(sampleNames(vranges.cat)))
 
 ```
 
-> S01 S02 S03 S04 S05 S06 S07   
-> 921 485 233 846 967 793 539   
+> S01 S02 S03 S04 S05 S06   
+> 539 819 921 793 610 967   
 
 
 **Could you predict which sample belongs to kidney or renal cancers ?** [solution](solutions/_vcf3.md)
@@ -229,10 +236,10 @@ dim(mm)
 
 ```
 
-> [1] 96  7
+> [1] 96  6
 
 The output of the command show us that there are 96 rows (these are the context
-values) and 7 columns which are the 7 samples.
+values) and 6 columns which are the 6 samples.
 
 ## Running the NMF analysis
 
@@ -240,16 +247,16 @@ Using the matrix we have made we can now run the non-negative matrix factorisati
 
 
 ```{.R}
-gof_nmf <- assessNumberSignatures(mm, 2:7, nReplicates = 5)
+gof_nmf <- assessNumberSignatures(mm, 2:6, nReplicates = 5)
 
 ```
 
-These parameter choices have been made to keep running time short for this practical !
+These parameter choices have been made to keep the running time short for this practical !
 
 Visualise the results from the NMF processing by making a pdf of the plot
 
 ```{.R}
-Cairo(file="results/plotNumberOfSignatures.pdf", type="pdf", units="in", width=9, height=8, dpi=72)
+pdf("results/plotNumberOfSignatures.pdf")
 plotNumberSignatures(gof_nmf)
 dev.off()
 
@@ -264,12 +271,12 @@ The top plot shows the decreasing residual sum of squares for each increasing nu
 Ideally the best solution will be the lowest number of signatures with a low RSS and a high explained variance
 
 
-Look at the y-axis scale on the bottom panel. The explained variance is already very high and so close to finding the correct solution for the number of signatures even with just 2. The error bars around each point are fairly small considering we have a very small sample set. Deciding how many signatures are present can be tricky but here let’s go for 4. This is where the gradient of both curves start to become flaten.
+Look at the y-axis scale on the bottom panel. The explained variance is already very high and so close to finding the correct solution for the number of signatures even with just 2. The error bars around each point are fairly small considering we have a very small sample set. Deciding how many signatures are present can be tricky but here let’s go for 3. But you can choose another value f you prefer.
 
 Now we can run the NMF again but this time stipulating that you want to group the data into 4 different mutational signatures.
 
 ```{.R}
-sigs_nmf = identifySignatures(mm, 4, nmfDecomposition)
+sigs_nmf = identifySignatures(mm, 3, nmfDecomposition)
 
 ```
 
@@ -279,12 +286,12 @@ Let's try to cluster samples based on the signture decomposition.
 
 ```{.R}
 library(pheatmap)
-Cairo(file="results/plot4Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+pdf("results/plot3Signatures_heatmat.pdf")
 pheatmap(samples(sigs_nmf),cluster_cols=F, clustering_distance_cols = "correlation")
 dev.off()
 
 ```
-Open up the `plot4Signatures_heatmat.pdf` that will have been made.
+Open up the `plot3Signatures_heatmat.pdf` that will have been made.
 
 **Are the coresponding cluster fiting with what we predict based on the number of mutation ?** [solution](solutions/_vcf5.md)
 
@@ -292,13 +299,13 @@ Now we can plot out the results for the individual samples in our dataset to sho
 proportion of their mutations have been assigned to each of the signatures.
 
 ```{.R}
-Cairo(file="results/PlotSampleContribution4Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+pdf("results/PlotSampleContribution3Signatures.pdf")
 plotSamples(sigs_nmf, normalize=TRUE) + scale_y_continuous(breaks=seq(0, 1, 0.2), expand = c(0,0))+ theme(axis.text.x = element_text(size=6))
 dev.off()
 
 ```
 
-Open the resulting `PlotSampleContribution4Signatures.pdf`. This shows the results for the mutation grouping for each sample. The samples are listed on the x-axis and the proportion of all mutations for that sample is shown on the y-axis. The colours of the bars indicate what proportion of the mutations for that sample were grouped into each of the signatures. The colour that makes up most of the bar for each sample is called its ”major signature”.
+Open the resulting `PlotSampleContribution3Signatures.pdf`. This shows the results for the mutation grouping for each sample. The samples are listed on the x-axis and the proportion of all mutations for that sample is shown on the y-axis. The colours of the bars indicate what proportion of the mutations for that sample were grouped into each of the signatures. The colour that makes up most of the bar for each sample is called its ”major signature”.
 
 
 **Is the contribution plot make sens ?** [solution](solutions/_vcf6.md)
@@ -307,13 +314,13 @@ Open the resulting `PlotSampleContribution4Signatures.pdf`. This shows the resul
 Now, we can visualise the shape of the profiles for these 4 signatures
 
 ```{.R}
-Cairo(file="results/plot4Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
+pdf("results/plot3Signatures.pdf")
 plotSignatures(sigs_nmf,normalize=TRUE, percent=FALSE) + ggtitle("Somatic Signatures: NMF - Barchart") + scale_fill_brewer(palette = "Set2")
 dev.off()
 
 ```
 
-Open up the `plot4Signatures.pdf` that will have been made.
+Open up the `plot3Signatures.pdf` that will have been made.
 
 
 The 96 possible mutation/context combinations are plotted along the x axis arranged in blocks of 6 lots of 16 (see information above). The height of the bars indicates the frequency of those particular mutation and context combinations in each signature.
@@ -365,8 +372,8 @@ colnames(sigs.input)=c("A[C>A]A","A[C>A]C","A[C>A]G","A[C>A]T","C[C>A]A","C[C>A]
 
 We can now plot for each sample the contribution of known mutations
 ```{.R}
-Cairo(file="results/PlotSampleDeconstructAlexandrov_pie.pdf", type="pdf", units="in", width=7, height=9, dpi=72)
-layout(matrix(1:8,ncol=2,byrow=T))
+pdf("results/PlotSampleDeconstructAlexandrov_pie.pdf")
+layout(matrix(1:6,ncol=2,byrow=T))
 for (i in rownames(sigs.input)) {
 	output.sigs = whichSignatures(tumor.ref = sigs.input, signatures.ref = signatures.nature2013, sample.id = i)
 	makePie(output.sigs)
@@ -384,6 +391,12 @@ q("yes")
 Open the resulting `PlotSampleDeconstructAlexandrov_pie.pdf`. This shows the results of the mutation signature deconstruct based on Alxendrov known signatures.
 
 **Can you interpret the signature pattern ?** [solution](solutions/_signature2.md)
+
+## Exit the container environment
+
+```{.bash}
+exit
+```
 
 ------------------------------
 # Circular representation of somtaic calls

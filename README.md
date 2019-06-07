@@ -59,8 +59,17 @@ For practical reasons we precomputed the mutect somatic mutations vcf of each sa
 Everything is already installed on your machine and the analysis will be run using the`R` analysis
 
 ```{.bash}
+
+#launch docker
+docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME --user $UID:$GROUPS -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd  c3genomics/genpipes:0.8
+
+module load mugqic/R_Bioconductor/3.5.0_3.7
+
 cd $HOME/ebicancerworkshop2019/vizu/signature
-mkdir -p results
+
+mkdir -p results vcf
+
+cp $MUGQIC_INSTALL_HOME/C3G_workshop/ebi_workshop/vizu/signature/* vcf/
 
 ```
 
@@ -70,7 +79,7 @@ Let see what the data look like
 
 
 ```{.bash}
-tree vcf/
+ls vcf/
 ```
 
 > vcf/   
@@ -80,7 +89,7 @@ tree vcf/
 > ├── S04.mutect.somatic.vcf   
 > ├── S05.mutect.somatic.vcf   
 > ├── S06.mutect.somatic.vcf   
-> └── S07.mutect.somatic.vcf   
+
 
 
 we could explore one vcf file
@@ -264,12 +273,12 @@ The top plot shows the decreasing residual sum of squares for each increasing nu
 Ideally the best solution will be the lowest number of signatures with a low RSS and a high explained variance
 
 
-Look at the y-axis scale on the bottom panel. The explained variance is already very high and so close to finding the correct solution for the number of signatures even with just 2. The error bars around each point are fairly small considering we have a very small sample set. Deciding how many signatures are present can be tricky but here let’s go for 4. This is where the gradient of both curves start to become flaten.
+Look at the y-axis scale on the bottom panel. The explained variance is already very high and so close to finding the correct solution for the number of signatures even with just 2. The error bars around each point are fairly small considering we have a very small sample set. Deciding how many signatures are present can be tricky but here let’s go for 6. This is where the gradient of both curves start to become flaten.
 
-Now we can run the NMF again but this time stipulating that you want to group the data into 4 different mutational signatures.
+Now we can run the NMF again but this time stipulating that you want to group the data into 6 different mutational signatures.
 
 ```{.R}
-sigs_nmf = identifySignatures(mm, 4, nmfDecomposition)
+sigs_nmf = identifySignatures(mm, 6, nmfDecomposition)
 
 ```
 
@@ -279,12 +288,12 @@ Let's try to cluster samples based on the signture decomposition.
 
 ```{.R}
 library(pheatmap)
-Cairo(file="results/plot4Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+Cairo(file="results/plot6Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
 pheatmap(samples(sigs_nmf),cluster_cols=F, clustering_distance_cols = "correlation")
 dev.off()
 
 ```
-Open up the `plot4Signatures_heatmat.pdf` that will have been made.
+Open up the `plot6Signatures_heatmat.pdf` that will have been made.
 
 **Are the coresponding cluster fiting with what we predict based on the number of mutation ?** [solution](solutions/_vcf5.md)
 
@@ -375,7 +384,7 @@ dev.off()
 
 ```
 
-Finally exit R
+exit R
 
 ```{.R}
 q("yes")
@@ -384,6 +393,14 @@ q("yes")
 Open the resulting `PlotSampleDeconstructAlexandrov_pie.pdf`. This shows the results of the mutation signature deconstruct based on Alxendrov known signatures.
 
 **Can you interpret the signature pattern ?** [solution](solutions/_signature2.md)
+
+# Exit the container environment
+
+```{.bash}
+exit
+
+```
+
 
 ------------------------------
 # Circular representation of somtaic calls
@@ -405,6 +422,13 @@ We will use a dataset derived from the analysis of whole genome sequencing paire
 First we nee to go in the folder to do the analysis
 
 ```{.bash}
+
+#launch docker
+docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME --user $UID:$GROUPS -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd  c3genomics/genpipes:0.8
+
+module load mugqic/R_Bioconductor/3.5.0_3.7
+
+
 cd /home/training/ebicancerworkshop2018/vizu/circos/
 
 ```

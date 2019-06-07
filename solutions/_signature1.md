@@ -1,9 +1,11 @@
-The 4th signature looks like either signature 3 or 5 from Alexandrov
+The signature S1  looks like either signature 1A or 1B from Alexandrov
 
-The 2nd signature may be the signature 1A from Alexandrov
+The signature S2 may be the signature 1B or 6 from Alexandrov
+
+The signature S3 may be the signature 3, 5, 8, 9 or 16 from Alexandrov
 
 
-Other signatures do not seems to match any known signatures
+Find the exact signature is very difficult.
 
 
 

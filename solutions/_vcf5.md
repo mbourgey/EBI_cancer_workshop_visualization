@@ -1,13 +1,13 @@
-Based on somatic mutation number we predictat case S01, S04, S05 and  S06 would be clustered togther with high burden and S02, S03, S07 would be clustered as low burden.
+Based on somatic mutation number we predictat case S01, S05 and  S06 would be clustered togther with low burden and S02, S03, S04 would be clustered as high burden.
 
 
 
-If we look at the clustering based on the 4 mutational signatures
+If we look at the clustering based on the 3 mutational signatures
 
-![Clustering](../img/4signatures_heatmap.png)
+![Clustering](../img/3signatures_heatmap.png)
 
 
-we could see 3 samples clustering toogether (S01, S05, S06). This clustering is mainly drived by the 4th signature. The 4 other samples seems different from the cluster but does not clearly cluster together.
+we could see 3 groups of samples clustering together . The first cluster (S02 and S05) is mainly drived by the 2nd signature, the second cluster (S03, S04 and S06) is mainly drived by the 3rd signature. The last sample seems mainly drived by the 1st signature.
 
 
 

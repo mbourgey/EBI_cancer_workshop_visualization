@@ -1,55 +1,83 @@
-cd $HOME/ebicancerworkshop2018/vizu/signature
+
+cd $HOME/ebicancerworkshop2019/vizu/signature
+
+## set environement
+
+#launch docker
+docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME --user $UID:$GROUPS -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd  c3genomics/genpipes:0.8
+
+module load mugqic/R_Bioconductor/3.6.0_3.9
+
 mkdir -p results
 
-tree vcf/
-less vcf/S01.mutect.somatic.vcf
+
+ls vcf/
+
+#less vcf/S01.mutect.somatic.vcf
+
 
 R
+
 
 library(SomaticSignatures)
 library(BSgenome.Hsapiens.1000genomes.hs37d5)
 library(ggplot2)
 library(Cairo)
 
-files <- list.files("vcf/",pattern=".vcf$",recursive=T,full.names=TRUE)
+
+files <- list.files("vcf",pattern=".vcf$",recursive=T,full.names=TRUE)
 files
 
+
 vranges <- lapply(files, function(v) readVcfAsVRanges(v,"hs37d5"))
+
 
 vranges.cat <- do.call(c,vranges)
 vranges.cat
 
+
 print(table(sampleNames(vranges.cat)))
+
 
 mc <- mutationContext(vranges.cat, BSgenome.Hsapiens.1000genomes.hs37d5)
 
+
 mc
+
 
 mm <- motifMatrix(mc, group = "sampleNames", normalize=TRUE)
 dim(mm)
 
-gof_nmf <- assessNumberSignatures(mm, 2:7, nReplicates = 5)
 
-Cairo(file="results/plotNumberOfSignatures.pdf", type="pdf", units="in", width=9, height=8, dpi=72)
+gof_nmf <- assessNumberSignatures(mm, 2:6, nReplicates = 5)
+
+
+pdf("results/plotNumberOfSignatures.pdf")
 plotNumberSignatures(gof_nmf)
 dev.off()
 
+
 sigs_nmf = identifySignatures(mm, 3, nmfDecomposition)
 
+
 library(pheatmap)
-Cairo(file="results/plot3Signatures_heatmat.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+pdf("results/plot3Signatures_heatmat.pdf")
 pheatmap(samples(sigs_nmf),cluster_cols=F, clustering_distance_cols = "correlation")
 dev.off()
 
-Cairo(file="results/plot3Signatures.pdf", type="pdf", units="in", width=10, height=8, dpi=72)
-plotSignatures(sigs_nmf,normalize=TRUE, percent=FALSE) + ggtitle("Somatic Signatures: NMF - Barchart") + scale_fill_brewer(palette = "Set2")
-dev.off()
 
-Cairo(file="results/PlotSampleContribution3Signatures.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
+pdf("results/PlotSampleContribution3Signatures.pdf")
 plotSamples(sigs_nmf, normalize=TRUE) + scale_y_continuous(breaks=seq(0, 1, 0.2), expand = c(0,0))+ theme(axis.text.x = element_text(size=6))
 dev.off()
 
+
+pdf("results/plot3Signatures.pdf")
+plotSignatures(sigs_nmf,normalize=TRUE, percent=FALSE) + ggtitle("Somatic Signatures: NMF - Barchart") + scale_fill_brewer(palette = "Set2")
+dev.off()
+
+
 library(deconstructSigs)
+
 
 sigs.input=as.data.frame(t(mm))
 colnames(sigs.input)=c("A[C>A]A","A[C>A]C","A[C>A]G","A[C>A]T","C[C>A]A","C[C>A]C","C[C>A]G",
@@ -67,12 +95,17 @@ colnames(sigs.input)=c("A[C>A]A","A[C>A]C","A[C>A]G","A[C>A]T","C[C>A]A","C[C>A]
  "C[T>G]A","C[T>G]C","C[T>G]G","C[T>G]T","G[T>G]A","G[T>G]C","G[T>G]G",
  "G[T>G]T","T[T>G]A","T[T>G]C","T[T>G]G","T[T>G]T")
 
-Cairo(file="results/PlotSampleDeconstructAlexandrov_pie.pdf", type="pdf", units="in", width=9, height=6, dpi=72)
-layout(matrix(1:9,nrow=3,byrow=T))
+
+pdf("results/PlotSampleDeconstructAlexandrov_pie.pdf")
+layout(matrix(1:6,ncol=2,byrow=T))
 for (i in rownames(sigs.input)) {
 	output.sigs = whichSignatures(tumor.ref = sigs.input, signatures.ref = signatures.nature2013, sample.id = i)
 	makePie(output.sigs)
 }
 dev.off()
 
+
 q("yes")
+
+exit
+

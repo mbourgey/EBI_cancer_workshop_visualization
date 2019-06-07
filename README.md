@@ -65,7 +65,7 @@ cd $HOME/ebicancerworkshop2019/vizu/signature
 ## set environement
 
 #launch docker
-docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME --user $UID:$GROUPS -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd  c3genomics/genpipes:0.8
+docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME --user $UID:$GROUPS -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd -e DISPLAY=$DISPLAY -v /etc/fonts/:/etc/fonts/  c3genomics/genpipes:0.8
 
 module load mugqic/R_Bioconductor/3.6.0_3.9
 
@@ -422,13 +422,15 @@ First we nee to go in the folder to do the analysis
 
 ```{.bash}
 
+cd /home/training/ebicancerworkshop2019/vizu/circos/
+
 #launch docker
-docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME --user $UID:$GROUPS -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd  c3genomics/genpipes:0.8
+docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME --user $UID:$GROUPS -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd -e DISPLAY=$DISPLAY -v /etc/fonts/:/etc/fonts/  c3genomics/genpipes:0.8
 
-module load mugqic/R_Bioconductor/3.5.0_3.7
+module load mugqic/R_Bioconductor/3.6.0_3.9
 
+cd /home/training/ebicancerworkshop2019/vizu/circos/
 
-cd /home/training/ebicancerworkshop2018/vizu/circos/
 
 ```
 
@@ -608,6 +610,13 @@ Finally exit R
 
 ```{.R}
 q("yes")
+```
+
+## Quite the container environment
+Now you can quite the docker environment
+
+```{.bash}
+exit
 ```
 
 

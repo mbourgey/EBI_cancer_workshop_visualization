@@ -6,7 +6,7 @@ docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -
 module load mugqic/R_Bioconductor/3.5.0_3.7
 
 
-cd /home/training/ebicancerworkshop2018/vizu/circos/
+cd $HOME/ebicancerworkshop2020/vizu/circos/
 
 
 ls 

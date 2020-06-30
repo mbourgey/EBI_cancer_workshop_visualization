@@ -60,7 +60,7 @@ Everything is already installed on your machine and the analysis will be run usi
 
 ```{.bash}
 
-cd $HOME/ebicancerworkshop2019/vizu/signature
+cd $HOME/ebicancerworkshop2020/vizu/signature
 
 ## set environement
 
@@ -425,7 +425,7 @@ First we nee to go in the folder to do the analysis
 
 ```{.bash}
 
-cd /home/training/ebicancerworkshop2019/vizu/circos/
+cd $HOME/ebicancerworkshop2020/vizu/circos/
 
 #launch docker
 docker run --privileged -v /tmp:/tmp --network host -it\

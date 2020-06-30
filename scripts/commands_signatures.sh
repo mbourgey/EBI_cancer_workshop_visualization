@@ -1,5 +1,5 @@
 
-cd $HOME/ebicancerworkshop2019/vizu/signature
+cd $HOME/ebicancerworkshop2020/vizu/signature
 
 ## set environement
 

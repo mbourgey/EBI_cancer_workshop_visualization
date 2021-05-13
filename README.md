@@ -60,7 +60,7 @@ Everything is already installed on your machine and the analysis will be run usi
 
 ```{.bash}
 
-cd $HOME/ebicancerworkshop2020/vizu/signature
+cd $HOME/ebicancerworkshop2021/vizu/signature
 
 ## set environement
 
@@ -435,7 +435,7 @@ docker run --privileged -v /tmp:/tmp --network host -it\
 
 module load mugqic/R_Bioconductor/3.6.0_3.9
 
-cd /home/training/ebicancerworkshop2019/vizu/circos/
+cd /home/training/ebicancerworkshop2021/vizu/circos/
 
 
 ```

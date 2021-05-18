@@ -1,4 +1,4 @@
-Based on somatic mutation number we predictat case S01, S05 and  S06 would be clustered togther with low burden and S02, S03, S04 would be clustered as high burden.
+Based on somatic mutation number we predictat case S01, S04 and S05 would be clustered togther with low burden and S02, S03 and S06 would be clustered as high burden.
 
 
 

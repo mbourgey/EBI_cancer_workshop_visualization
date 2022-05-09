@@ -60,15 +60,15 @@ Everything is already installed on your machine and the analysis will be run usi
 
 ```{.bash}
 
-cd $HOME/ebicancerworkshop2021/vizu/signature
+cd $HOME/ebicancerworkshop2022/vizu/signature
 
 ## set environement
 
 #launch docker
 docker run --privileged -v /tmp:/tmp --network host -it \
-    -w $PWD -v $HOME:$HOME --user $UID:$GROUPS \
-    -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd \
-    -e DISPLAY=$DISPLAY -v /etc/fonts/:/etc/fonts/  c3genomics/genpipes:0.8
+    -w $PWD -v $HOME:$HOME -v /etc/fonts/:/etc/fonts/ \
+    -v $HOME/cvmfs_caches/:/cvmfs-cache/ c3genomics/genpipes:v2.1.0
+
 
 module load mugqic/R_Bioconductor/3.6.0_3.9
 
@@ -425,17 +425,14 @@ First we nee to go in the folder to do the analysis
 
 ```{.bash}
 
-cd $HOME/ebicancerworkshop2020/vizu/circos/
-
 #launch docker
-docker run --privileged -v /tmp:/tmp --network host -it\
-      -w $PWD -v $HOME:$HOME --user $UID:$GROUPS \
-      -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd \
-      -e DISPLAY=$DISPLAY -v /etc/fonts/:/etc/fonts/  c3genomics/genpipes:0.8
+docker run --privileged -v /tmp:/tmp --network host -it \
+    -w $PWD -v $HOME:$HOME -v /etc/fonts/:/etc/fonts/ \
+    -v $HOME/cvmfs_caches/:/cvmfs-cache/ c3genomics/genpipes:v2.1.0
 
 module load mugqic/R_Bioconductor/3.6.0_3.9
 
-cd /home/training/ebicancerworkshop2021/vizu/circos/
+cd /home/training/ebicancerworkshop2022/vizu/circos/
 
 
 ```
